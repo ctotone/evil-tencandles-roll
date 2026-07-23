@@ -14,6 +14,7 @@ import {
   handleViceOrVirtue
 } from "./resolution.js";
 import { notifyRequester } from "./notifications.js";
+import { handleDice3DRollMessage } from "./dice.js";
 
 export async function requestPlayerRoll() {
   const actor = await chooseCharacterActorForRoll();
@@ -66,6 +67,11 @@ export async function onSocketMessage(data) {
       : "info";
 
     ui.notifications[level]?.(data.message);
+    return;
+  }
+
+  if (data.type === "dice3d-roll") {
+    await handleDice3DRollMessage(data);
     return;
   }
 

@@ -5,7 +5,12 @@
 import { TOTAL_CANDLES } from "./constants.js";
 import { clone } from "./utils.js";
 import { getState, saveState } from "./state.js";
-import { countValue, getResolutionAnalysis, rollD6Pool } from "./dice.js";
+import {
+  countValue,
+  getResolutionAnalysis,
+  rollD6Pool,
+  rollPlayerD6Pool
+} from "./dice.js";
 import {
   consumeActorResource,
   getActorResourceState,
@@ -13,6 +18,7 @@ import {
 } from "./resources.js";
 import {
   createBallOfTruthsMessage,
+  createCharacterDepartureMessage,
   createResolutionMessage,
   renderBallOfTruthsCard,
   updateResolutionMessage
@@ -116,17 +122,20 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
   }
 
   const resources = getActorResourceState(actor);
-  const blueResults = await rollD6Pool(state.bluePoolRemaining);
-  const hopeResults = resources.canUseMoment
-    ? await rollD6Pool(1)
-    : [];
-  const hopeResult = hopeResults[0] ?? null;
+  const {
+    blueResults,
+    hopeResult
+  } = await rollPlayerD6Pool(state.bluePoolRemaining, {
+    includeHope: resources.canUseMoment,
+    userId: requesterId,
+    actorId: actor.id
+  });
   const redPoolSize = TOTAL_CANDLES - state.litCandles;
   const gmRollCompleted = redPoolSize === 0;
 
   const resolution = {
     id: foundry.utils.randomID(),
-    status: gmRollCompleted ? "pending-validation" : "waiting-gm",
+    status: "pending-validation",
     chatMessageId: null,
 
     playerId: requester.id,
@@ -147,6 +156,7 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
     redPoolSize,
     redResults: [],
     gmRollCompleted,
+    gmRollSkipped: false,
 
     rerolls: {
       vice: false,
@@ -233,7 +243,10 @@ export async function handleGMRoll(requesterId, requestedResolutionId = null) {
     return;
   }
 
-  resolution.redResults = await rollD6Pool(resolution.redPoolSize);
+  resolution.redResults = await rollD6Pool(
+    resolution.redPoolSize,
+    { userId: requesterId }
+  );
   resolution.gmRollCompleted = true;
   resolution.status = "pending-validation";
   resolution.history.push({
@@ -286,7 +299,10 @@ export async function handleViceOrVirtue(requesterId, resolutionId, resource) {
     return;
   }
 
-  const replacements = await rollD6Pool(oneCount);
+  const replacements = await rollD6Pool(oneCount, {
+    userId: resolution.playerId,
+    actorId: resolution.actorId
+  });
   let replacementIndex = 0;
 
   resolution.blueResults = resolution.blueResults.map((result) => {
@@ -340,7 +356,13 @@ export async function handleLimit(requesterId, resolutionId) {
     return;
   }
 
-  resolution.blueResults = await rollD6Pool(resolution.bluePoolSize);
+  resolution.blueResults = await rollD6Pool(
+    resolution.bluePoolSize,
+    {
+      userId: resolution.playerId,
+      actorId: resolution.actorId
+    }
+  );
 
   // La Limite reste disponible pour les conflits suivants.
   // Ce marqueur empêche seulement une seconde utilisation dans ce conflit.
@@ -365,37 +387,58 @@ export async function handleValidation(requesterId, resolutionId) {
 
   const { state, resolution } = context;
 
-  if (!resolution.gmRollCompleted) {
-    notifyRequester(
-      requesterId,
-      "warn",
-      "Le pool du MJ doit être lancé avant de valider la résolution."
-    );
-    return;
+  const gmRollSkipped =
+    resolution.redPoolSize > 0 &&
+    !resolution.gmRollCompleted;
+
+  if (gmRollSkipped) {
+    resolution.gmRollSkipped = true;
+    resolution.redResults = [];
+    resolution.history.push({
+      type: "gm-roll-skipped",
+      timestamp: Date.now()
+    });
   }
 
   const analysis = getResolutionAnalysis(resolution);
+  const characterDeparture =
+    !analysis.success &&
+    Number(resolution.litCandlesAtRoll) === 1;
 
   resolution.status = "resolved";
   resolution.finalSuccess = analysis.success;
   resolution.narrator = analysis.narrator;
-  resolution.blueDiceLost = analysis.blueOnes;
+  resolution.characterDeparture = characterDeparture;
+
+  // Lors de la dernière bougie, un personnage qui échoue quitte la partie,
+  // mais l'unique dé reste disponible pour les personnages encore en vie.
+  resolution.blueDiceLost = characterDeparture
+    ? 0
+    : analysis.blueOnes;
+
   resolution.updatedAt = Date.now();
   resolution.history.push({
     type: "validation",
     success: analysis.success,
     narrator: analysis.narrator,
-    blueDiceLost: analysis.blueOnes,
+    blueDiceLost: resolution.blueDiceLost,
+    characterDeparture,
+    gmRollSkipped,
     timestamp: Date.now()
   });
 
-  state.bluePoolRemaining = Math.max(
-    0,
-    resolution.bluePoolSize - resolution.blueDiceLost
-  );
+  if (characterDeparture) {
+    state.bluePoolRemaining = 1;
+    state.stage = "scene";
+  } else {
+    state.bluePoolRemaining = Math.max(
+      0,
+      resolution.bluePoolSize - resolution.blueDiceLost
+    );
 
-  if (!analysis.success) {
-    state.stage = "ball-of-truths";
+    if (!analysis.success) {
+      state.stage = "ball-of-truths";
+    }
   }
 
   state.lastResolution = clone(resolution);
@@ -408,7 +451,9 @@ export async function handleValidation(requesterId, resolutionId) {
 
   await updateResolutionMessage(resolution);
 
-  if (!analysis.success) {
+  if (characterDeparture) {
+    await createCharacterDepartureMessage(resolution);
+  } else if (!analysis.success) {
     await createBallOfTruthsMessage(resolution);
   }
 }

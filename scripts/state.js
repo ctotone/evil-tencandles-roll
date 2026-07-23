@@ -99,12 +99,17 @@ export function normalizeState(rawState) {
       ? resolution.history
       : [];
 
+    resolution.characterDeparture = Boolean(
+      resolution.characterDeparture
+    );
+
     resolution.momentUsed = Boolean(resolution.momentUsed);
     resolution.momentResult = resolution.momentUsed
       ? resolution.momentResult
       : null;
 
     resolution.gmRollCompleted = Boolean(resolution.gmRollCompleted);
+    resolution.gmRollSkipped = Boolean(resolution.gmRollSkipped);
     resolution.actorId = resolution.actorId ?? null;
     resolution.actorUuid = resolution.actorUuid ?? null;
     resolution.actorName = resolution.actorName ?? null;

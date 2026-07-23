@@ -21,10 +21,10 @@ export function renderDice(results, color) {
             ? "etc-die--hope-success"
             : "etc-die--neutral"
         );
-      } else if (result === 1) {
-        classes.push("etc-die--danger");
       } else if (result === 6) {
         classes.push("etc-die--success");
+      } else if (color === "blue" && result === 1) {
+        classes.push("etc-die--danger");
       } else {
         classes.push("etc-die--neutral");
       }
@@ -135,9 +135,8 @@ export function renderGMValidationButton(resolution) {
           type="button"
           class="etc-action etc-action--validate"
           data-etc-action="validate-resolution"
-          title="Cliquer pour valider le conflit et clôturer le jet en cours."
-          aria-label="Valider le conflit — Cliquer pour valider le conflit et clôturer le jet en cours."
-          ${resolution.gmRollCompleted ? "" : "disabled"}
+          title="Valider le conflit avec ou sans jet du MJ et clôturer le jet en cours."
+          aria-label="Valider le conflit — Valider le conflit avec ou sans jet du MJ et clôturer le jet en cours."
         >
           Valider le conflit
         </button>
@@ -176,6 +175,10 @@ export function renderResolutionResult(resolution, analysis) {
   }
 
   if (!resolution.finalSuccess) {
+    const failureMessage = resolution.characterDeparture
+      ? `${escapeHTML(resolution.playerName)} va nous quitter.`
+      : "Le Bal des vérités commence.";
+
     return `
       <section class="etc-result etc-result--failure">
         <div class="etc-result__heading">
@@ -187,7 +190,7 @@ export function renderResolutionResult(resolution, analysis) {
           </span>
           <strong>Échec définitif</strong>
         </div>
-        <span class="etc-result__main">Le Bal des vérités commence.</span>
+        <span class="etc-result__main">${failureMessage}</span>
       </section>
     `;
   }
@@ -257,35 +260,45 @@ export function renderResolutionCard(resolution) {
           <div class="etc-dice-row">${renderDice(resolution.redResults, "red")}</div>
         </section>
       `
-      : `
-        <section class="etc-pool etc-pool--gm etc-pool--waiting">
-          <div class="etc-pool__heading">
-            <strong>Maître du jeu</strong>
-          </div>
-
-          <div class="etc-gm-roll-reserved-space">
-            <div
-              class="etc-dice-row etc-dice-row--sizer"
-              aria-hidden="true"
-            >
-              ${renderDice(
-                Array.from({ length: resolution.redPoolSize }, () => 6),
-                "red"
-              )}
+      : resolution.status === "resolved" && resolution.gmRollSkipped
+        ? `
+          <section class="etc-pool etc-pool--gm">
+            <div class="etc-pool__heading">
+              <strong>Maître du jeu</strong>
+            </div>
+            <div class="etc-empty">Jet MJ non effectué</div>
+          </section>
+        `
+        : `
+          <section class="etc-pool etc-pool--gm etc-pool--waiting">
+            <div class="etc-pool__heading">
+              <strong>Maître du jeu</strong>
             </div>
 
-            <button
-              type="button"
-              class="etc-action etc-action--gm-roll"
-              data-etc-action="gm-roll"
-              data-etc-gm-roll-trigger
-            >
-              <i class="fa-solid fa-dice" aria-hidden="true"></i>
-              <span>Jet du MJ</span>
-            </button>
-          </div>
-        </section>
-      `;
+            <div class="etc-gm-roll-reserved-space">
+              <div
+                class="etc-dice-row etc-dice-row--sizer"
+                aria-hidden="true"
+              >
+                ${renderDice(
+                  Array.from({ length: resolution.redPoolSize }, () => 6),
+                  "red"
+                )}
+              </div>
+
+              <button
+                type="button"
+                class="etc-action etc-action--gm-roll"
+                data-etc-action="gm-roll"
+                data-etc-gm-roll-trigger
+                title="Facultatif : lancer le pool du MJ"
+              >
+                <i class="fa-solid fa-dice" aria-hidden="true"></i>
+                <span>Jet du MJ</span>
+              </button>
+            </div>
+          </section>
+        `;
 
   const gmValidationButton = renderGMValidationButton(resolution);
 
@@ -293,14 +306,9 @@ export function renderResolutionCard(resolution) {
     ? `
       <div class="etc-gm-row">
         ${redSection}
-        ${gmValidationButton}
       </div>
     `
     : "";
-
-  const standaloneGMValidation = redSection
-    ? ""
-    : gmValidationButton;
 
   return `
     <article
@@ -329,7 +337,7 @@ export function renderResolutionCard(resolution) {
 
       ${gmRow}
       ${renderResolutionResult(resolution, analysis)}
-      ${standaloneGMValidation}
+      ${gmValidationButton}
 
     </article>
   `;
@@ -395,6 +403,38 @@ export function renderBallOfTruthsCard(
       ${transitionContent}
     </article>
   `;
+}
+
+
+export function renderCharacterDepartureCard(resolution) {
+  return `
+    <article
+      class="etc-card etc-character-departure"
+      data-etc-resolution-id="${escapeHTML(resolution.id)}"
+    >
+      <section class="etc-result etc-result--failure">
+        <strong class="etc-character-departure__message">
+          ${escapeHTML(resolution.playerName)} va nous quitter
+        </strong>
+      </section>
+    </article>
+  `;
+}
+
+export async function createCharacterDepartureMessage(resolution) {
+  return foundry.documents.ChatMessage.create({
+    speaker: {
+      alias: "Ten Candles"
+    },
+    content: renderCharacterDepartureCard(resolution),
+    flags: {
+      [MODULE_ID]: {
+        type: "character-departure",
+        resolutionId: resolution.id,
+        actorUuid: resolution.actorUuid
+      }
+    }
+  });
 }
 
 export async function createResolutionMessage(resolution) {

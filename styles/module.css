@@ -41,10 +41,18 @@
   white-space: nowrap;
 }
 
+.chat-message .etc-card .etc-pool--player .etc-pool__heading,
+.chat-message .etc-card .etc-pool--gm .etc-pool__heading {
+  justify-content: center;
+  text-align: center;
+}
+
 .chat-message .etc-card .etc-pool--player .etc-pool__heading strong,
 .chat-message .etc-card .etc-pool--gm .etc-pool__heading strong {
+  width: 100%;
   font-family: inherit;
   font-weight: 700;
+  text-align: center;
 }
 
 .etc-card__header,
@@ -144,9 +152,9 @@
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.045);
   box-shadow:
-    0 0.3rem 0.7rem rgba(0, 0, 0, 0.36),
+    0 0.3rem 0.7rem rgb(0 0 0),
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    inset 0 -1px 0 rgb(0 0 0 / 27%);
 }
 
 .etc-player-row {
@@ -167,12 +175,6 @@
   width: 100%;
   min-width: 0;
   margin-bottom: 1.5rem;
-}
-
-.etc-gm-row--has-actions {
-  grid-template-columns: minmax(0, 1fr) 2.25rem;
-  align-items: stretch;
-  gap: 0.35rem;
 }
 
 .etc-player-content {
@@ -278,6 +280,10 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 7px;
   background: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0.3rem 0.7rem rgb(0 0 0),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgb(0 0 0 / 27%);
 }
 
 .etc-result__heading {
@@ -389,22 +395,6 @@
   display: grid;
 }
 
-.etc-gm-row .etc-actions--gm,
-.etc-gm-row .etc-actions__gm {
-  width: 100%;
-  min-width: 0;
-  height: 100%;
-  min-height: 0;
-  align-self: stretch;
-}
-
-.etc-gm-row .etc-actions__gm > .etc-action {
-  width: 100%;
-  min-width: 0;
-  height: 100%;
-  min-height: 0;
-}
-
 .chat-message .etc-card .etc-action {
   display: inline-flex;
   min-height: 2.1rem;
@@ -496,16 +486,9 @@
 }
 
 .chat-message .etc-card .etc-action--validate {
+  width: 100%;
   border-color: rgba(90, 210, 125, 0.55);
   background: rgba(60, 130, 80, 0.28);
-}
-
-.chat-message .etc-conflict-card .etc-gm-row .etc-action--validate {
-  min-height: 0;
-  padding: 0.35rem 0.15rem;
-  line-height: 1;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
 }
 
 .etc-card__footer {
@@ -655,5 +638,150 @@
   color: rgba(255, 255, 255, 0.75);
   cursor: default;
   opacity: 0.8;
+}
+
+
+.etc-floating-roll {
+  position: fixed;
+  z-index: 80;
+  left: 21%;
+  bottom: 1.25rem;
+  display: inline-flex;
+  min-width: 14.5rem;
+  min-height: 3.65rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1rem;
+  transform: translateX(-50%);
+  border: 1px solid rgba(215, 220, 230, 0.34);
+  border-radius: 7px;
+  background: rgba(12, 14, 20, 0.94);
+  color: #f2f3f5;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow:
+    0px 0px 19px 1px rgb(95 95 95 / 72%),
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    inset 0 -1px 0 rgb(0 0 0 / 40%);
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    background 120ms ease,
+    box-shadow 120ms ease,
+    opacity 120ms ease;
+}
+
+.etc-floating-roll i,
+.etc-floating-roll span {
+  color: inherit;
+  pointer-events: none;
+}
+
+.etc-floating-roll:hover:not(:disabled) {
+  transform: translate(-50%, -1px);
+  border-color: rgba(245, 245, 250, 0.62);
+  background: rgba(25, 29, 40, 0.97);
+  box-shadow:
+    0 0.5rem 1rem rgb(0 0 0 / 80%),
+    inset 0 1px 0 rgb(255 255 255 / 16%),
+    inset 0 -1px 0 rgb(0 0 0 / 34%);
+}
+
+.etc-floating-roll:active:not(:disabled) {
+  transform: translate(-50%, 1px);
+  box-shadow:
+    0 0.12rem 0.3rem rgb(0 0 0 / 70%),
+    inset 0 1px 0 rgb(0 0 0 / 38%),
+    inset 0 -1px 0 rgb(255 255 255 / 7%);
+}
+
+.etc-floating-roll:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  filter: saturate(0.55);
+}
+
+.etc-floating-roll--busy i {
+  animation: etc-floating-roll-spin 900ms linear infinite;
+}
+
+@keyframes etc-floating-roll-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 700px) {
+  .etc-floating-roll {
+    bottom: 5rem;
+    min-width: 9.5rem;
+    padding-inline: 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+
+.etc-resource-control {
+  min-width: 18rem;
+}
+
+.etc-resource-control__actor {
+  margin: 0 0 0.3rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.etc-resource-control__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.4rem 0;
+}
+
+.etc-resource-status {
+  min-width: 6.5rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.etc-resource-status--available {
+  border-color: rgba(105, 205, 135, 0.62);
+  background: rgba(45, 120, 75, 0.34);
+  color: #d9f5e2;
+}
+
+.etc-resource-status--used {
+  border-color: rgba(190, 105, 115, 0.62);
+  background: rgba(120, 45, 55, 0.36);
+  color: #f3ced3;
+}
+
+.etc-resource-status--locked {
+  border-color: rgba(205, 150, 70, 0.62);
+  background: rgba(125, 85, 30, 0.34);
+  color: #f3d5a1;
+}
+
+.etc-resource-status--absent {
+  border-color: rgba(155, 160, 170, 0.4);
+  background: rgba(85, 90, 100, 0.24);
+  color: #c7cad0;
+}
+
+
+.etc-character-departure__message {
+  width: 100%;
+  font-size: 1rem;
+  text-align: center;
 }
 

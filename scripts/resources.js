@@ -102,6 +102,119 @@ export async function resetActorResources(actor, { notify = true } = {}) {
   return true;
 }
 
+
+function getResourceDisplayState({
+  present,
+  used,
+  availableLabel,
+  usedLabel,
+  absentLabel
+}) {
+  if (!present) {
+    return {
+      label: absentLabel,
+      cssClass: "etc-resource-status--absent"
+    };
+  }
+
+  if (used) {
+    return {
+      label: usedLabel,
+      cssClass: "etc-resource-status--used"
+    };
+  }
+
+  return {
+    label: availableLabel,
+    cssClass: "etc-resource-status--available"
+  };
+}
+
+export async function openSelectedActorResourceStatus() {
+  if (!game.user.isGM) {
+    ui.notifications.warn("Cette action est réservée au MJ.");
+    return false;
+  }
+
+  const actor = await chooseCharacterActorForRoll();
+  if (!actor) return false;
+
+  const resources = getActorResourceState(actor);
+
+  const virtue = getResourceDisplayState({
+    present: resources.hasVirtue,
+    used: resources.virtueUsed,
+    availableLabel: "Disponible",
+    usedLabel: "Utilisée",
+    absentLabel: "Absente"
+  });
+
+  const vice = getResourceDisplayState({
+    present: resources.hasVice,
+    used: resources.viceUsed,
+    availableLabel: "Disponible",
+    usedLabel: "Utilisé",
+    absentLabel: "Absent"
+  });
+
+  const limit = !resources.hasLimit
+    ? {
+        label: "Absente",
+        cssClass: "etc-resource-status--absent"
+      }
+    : resources.canUseLimit
+      ? {
+          label: "Débloquée",
+          cssClass: "etc-resource-status--available"
+        }
+      : {
+          label: "Verrouillée",
+          cssClass: "etc-resource-status--locked"
+        };
+
+  await foundry.applications.api.DialogV2.input({
+    window: {
+      title: `Ten Candles — Ressources de ${actor.name}`
+    },
+    content: `
+      <div class="etc-dialog etc-resource-control">
+        <p class="etc-resource-control__actor">
+          ${escapeHTML(actor.name)}
+        </p>
+
+        <div class="etc-resource-control__row">
+          <strong>Vertu</strong>
+          <span class="etc-resource-status ${virtue.cssClass}">
+            ${virtue.label}
+          </span>
+        </div>
+
+        <div class="etc-resource-control__row">
+          <strong>Vice</strong>
+          <span class="etc-resource-status ${vice.cssClass}">
+            ${vice.label}
+          </span>
+        </div>
+
+        <div class="etc-resource-control__row">
+          <strong>Limite</strong>
+          <span class="etc-resource-status ${limit.cssClass}">
+            ${limit.label}
+          </span>
+        </div>
+      </div>
+    `,
+    ok: {
+      label: "Fermer",
+      callback: () => true
+    },
+    rejectClose: false,
+    modal: true
+  });
+
+  return true;
+}
+
 export function getControlledCharacterActors() {
   const actors = (canvas.tokens?.controlled ?? [])
     .map((token) => token.actor)

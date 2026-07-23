@@ -29,6 +29,8 @@ import { openCanvasSetup, openGMSetup } from "./dialogs.js";
 import { onSocketMessage, requestAction, requestPlayerRoll } from "./socket.js";
 import {
   activateChatMessageActions,
+  mountFloatingPlayerRollButton,
+  refreshFloatingPlayerRollButton,
   registerSceneControlButtons
 } from "./controls.js";
 
@@ -98,13 +100,64 @@ Hooks.once("ready", () => {
     }
   };
 
+  mountFloatingPlayerRollButton();
+
   console.log(`${MODULE_ID} | Prêt.`);
+});
+
+Hooks.on("preCreateActor", (actor, data) => {
+  if (game.system.id !== "tencandles") return;
+  if (actor.type !== "character") return;
+
+  const items = foundry.utils.deepClone(
+    Array.isArray(data.items) ? data.items : []
+  );
+
+  const existingTypes = new Set(
+    items.map((item) => item.type)
+  );
+
+  if (!existingTypes.has("virtue")) {
+    items.push({
+      name: "Vertu",
+      type: "virtue",
+      system: {
+        description: ""
+      }
+    });
+  }
+
+  if (!existingTypes.has("vice")) {
+    items.push({
+      name: "Vice",
+      type: "vice",
+      system: {
+        description: ""
+      }
+    });
+  }
+
+  actor.updateSource({ items });
 });
 
 Hooks.on("getSceneControlButtons", registerSceneControlButtons);
 Hooks.on("renderChatMessageHTML", activateChatMessageActions);
 
+Hooks.on("updateSetting", (setting) => {
+  if (
+    setting.key === `${MODULE_ID}.${STATE_KEY}` ||
+    setting.key === STATE_KEY
+  ) {
+    refreshFloatingPlayerRollButton();
+  }
+});
+
+Hooks.on("userConnected", () => {
+  refreshFloatingPlayerRollButton();
+});
+
 Hooks.on("canvasReady", async () => {
+  mountFloatingPlayerRollButton();
   if (!isActiveGM()) return;
 
   const state = getState();
