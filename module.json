@@ -13,9 +13,6 @@
     "minimum": "14",
     "verified": "14"
   },
-  "system": [
-    "tencandles"
-  ],
   "esmodules": [
     "scripts/main.js"
   ],
