@@ -1,0 +1,56 @@
+{
+  "EVILTENCANDLES": {
+    "Controls": {
+      "PlayerRoll": "Ten Candles : lancer le pool joueur",
+      "GMRoll": "Ten Candles : lancer le pool MJ",
+      "DevSettings": "Ten Candles : réglages de développement"
+    },
+    "Status": {
+      "WaitingGM": "En attente du lancer du MJ",
+      "PendingValidation": "Jets réunis — résolution à venir",
+      "Resolved": "Résolution terminée",
+      "Cancelled": "Résolution annulée"
+    },
+    "Chat": {
+      "Title": "Ten Candles — Résolution",
+      "LitCandles": "bougie(s) allumée(s)",
+      "PlayerDice": "dé(s) joueur",
+      "GMDice": "dé(s) MJ",
+      "PlayerPool": "Pool du joueur",
+      "GMPool": "Pool du MJ",
+      "SixResults": "{count} résultat(s) de 6",
+      "OneResults": "{count} résultat(s) de 1",
+      "DiceCount": "{count} dé(s)",
+      "DiceToRoll": "{count} dé(s) à lancer",
+      "GMWaiting": "Le MJ doit cliquer sur le bouton Ten Candles.",
+      "NoDice": "Aucun dé",
+      "ResolutionId": "Résolution : {id}",
+      "DieTitle": "d6 : {result}",
+      "SimulatedPlayerName": "Simulation joueur — {name}"
+    },
+    "Dialog": {
+      "Title": "Ten Candles — Réglages de développement",
+      "LitCandles": "Bougies allumées",
+      "BluePoolRemaining": "Dés bleus encore disponibles",
+      "CancelResolution": "Annuler la résolution active",
+      "Save": "Enregistrer"
+    },
+    "Settings": {
+      "StateName": "État interne de Ten Candles",
+      "StateHint": "État persistant utilisé par le module."
+    },
+    "Notifications": {
+      "GMOnly": "Cette action est réservée au MJ.",
+      "ActiveResolution": "Une résolution Ten Candles est déjà en cours.",
+      "BallOfTruths": "La partie est actuellement au Bal des vérités.",
+      "NoBlueDice": "Aucun dé bleu n'est actuellement disponible.",
+      "PlayerRollDone": "{count} dé(s) bleu(s) lancé(s).",
+      "NoPendingResolution": "Aucune résolution joueur n'attend le lancer du MJ.",
+      "GMAlreadyRolled": "Le pool rouge a déjà été lancé pour cette résolution.",
+      "SettingsSaved": "Ten Candles : {candles} bougie(s), {dice} dé(s) bleu(s).",
+      "NoActiveGM": "Aucun MJ actif n'est disponible pour traiter le lancer Ten Candles.",
+      "RollError": "Une erreur est survenue pendant le lancer Ten Candles.",
+      "StateReset": "L'état Ten Candles a été réinitialisé."
+    }
+  }
+}

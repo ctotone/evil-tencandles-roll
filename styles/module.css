@@ -1,99 +1,570 @@
-.etc-card {
+@font-face {
+  font-family: "3rd";
+  src: url("../fonts/3rd Man.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "feeling";
+  src: url("../fonts/Feeling Passionate.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.chat-message .etc-card {
   display: grid;
   gap: 0.75rem;
   padding: 0.8rem;
-  border: 1px solid var(--color-border-light-2);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 8px;
-  background: rgba(10, 12, 18, 0.9);
-  color: var(--color-text-light-highlight);
+  background: rgba(10, 12, 18, 0.94);
+  color: #f2f3f5;
+}
+
+.chat-message .etc-card h3,
+.chat-message .etc-card p,
+.chat-message .etc-card strong,
+.chat-message .etc-card span,
+.chat-message .etc-card i {
+  color: inherit;
+}
+
+.chat-message .etc-conflict-card > .etc-card__header h3 {
+  grid-column: 1 / 3;
+  justify-self: center;
+  font-family: "3rd", serif;
+  font-weight: 400;
+  font-size: 3rem;
+  white-space: nowrap;
+}
+
+.chat-message .etc-card .etc-pool--player .etc-pool__heading strong,
+.chat-message .etc-card .etc-pool--gm .etc-pool__heading strong {
+  font-family: inherit;
+  font-weight: 700;
 }
 
 .etc-card__header,
-.etc-pool__heading,
-.etc-summary {
+.etc-pool__heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  font-size: 1.3rem;
+}
+
+.etc-conflict-card > .etc-card__header {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .etc-card__header h3,
 .etc-card__header p,
-.etc-pool p {
+.etc-pool p,
+.etc-result span,
+.etc-ball-of-truths > p {
   margin: 0;
 }
 
 .etc-card__header p,
 .etc-pool__heading span,
 .etc-card__footer,
-.etc-empty {
-  color: var(--color-text-light-6);
+.etc-empty,
+.etc-result span,
+.etc-pool--waiting p {
+  color: #c9cdd5;
   font-size: 0.8rem;
 }
 
 .etc-status {
-  max-width: 46%;
-  padding: 0.25rem 0.45rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  font-size: 0.75rem;
+  box-sizing: border-box;
+  display: inline-flex;
+  grid-column: 3;
+  justify-self: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  font-size: 1rem;
+  line-height: 1;
   text-align: center;
 }
 
-.etc-summary {
-  flex-wrap: wrap;
-  padding: 0.55rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  font-size: 0.8rem;
+.etc-status--cancelled {
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  line-height: 1.1;
+}
+
+.etc-status--waiting-gm {
+  border-color: rgba(220, 165, 75, 0.78);
+  background: rgba(145, 95, 25, 0.42);
+  color: #f3cf8b;
+}
+
+.etc-status--pending-validation {
+  border-color: rgba(105, 165, 225, 0.78);
+  background: rgba(45, 95, 150, 0.42);
+  color: #b9d9f5;
+}
+
+.etc-status--cancelled {
+  border-color: rgba(175, 100, 100, 0.68);
+  background: rgba(105, 55, 55, 0.38);
+  color: #d7aaaa;
+}
+
+.chat-message .etc-card--cancelled {
+  opacity: 0.68;
+  filter: saturate(0.65);
 }
 
 .etc-pool {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.55rem;
 }
 
-.etc-pool--waiting {
-  padding: 0.55rem;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+.etc-pool--player,
+.etc-pool--gm {
+  padding: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 6px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow:
+    0 0.3rem 0.7rem rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
-.etc-dice-row {
-  display: flex;
-  flex-wrap: wrap;
+.etc-player-row {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 1.5rem;
+}
+
+.etc-player-row--has-actions {
+  grid-template-columns: minmax(0, 1fr) 2.25rem;
+  align-items: stretch;
   gap: 0.35rem;
 }
 
-.etc-die {
+.etc-gm-row {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 1.5rem;
+}
+
+.etc-gm-row--has-actions {
+  grid-template-columns: minmax(0, 1fr) 2.25rem;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+.etc-player-content {
+  display: grid;
+  min-width: 0;
+  gap: 0.55rem;
+}
+
+.etc-pool--player .etc-pool__heading,
+.etc-pool--gm .etc-pool__heading {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.etc-pool--waiting {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.etc-player-hope {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.etc-player-hope > strong {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.etc-dice-row--hope {
+  grid-column: 2;
+  width: auto;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.etc-dice-row {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  max-width: calc((5 * 1.65rem) + (4 * 0.32rem));
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.32rem;
+  margin-inline: auto;
+}
+
+.etc-gm-roll-reserved-space {
+  display: grid;
+}
+
+.etc-gm-roll-reserved-space > * {
+  grid-area: 1 / 1;
+}
+
+.etc-dice-row--sizer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.chat-message .etc-card .etc-die {
+  box-sizing: border-box;
   display: inline-grid;
-  width: 2rem;
-  height: 2rem;
+  flex: 0 0 1.65rem;
+  width: 1.65rem;
+  height: 1.65rem;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(15, 17, 20, 0.72);
   border-radius: 5px;
+  color: #0b0c0e;
+  font-family: inherit;
+  font-size: 0.9rem;
   font-weight: 700;
+  line-height: 1;
+  text-shadow: none;
+  box-shadow: none;
 }
 
-.etc-die--blue {
-  background: rgba(45, 105, 190, 0.45);
+.chat-message .etc-card .etc-die--neutral {
+  background: rgba(245, 245, 242, 0.8);
 }
 
-.etc-die--red {
-  background: rgba(175, 45, 45, 0.45);
+.chat-message .etc-card .etc-die--danger {
+  background: rgb(215, 55, 70);
 }
 
-.etc-die--one {
-  box-shadow: inset 0 0 0 2px rgba(255, 175, 60, 0.8);
+.chat-message .etc-card .etc-die--success {
+  background: rgb(45, 180, 90);
 }
 
-.etc-die--six {
-  box-shadow: inset 0 0 0 2px rgba(90, 220, 130, 0.9);
+.chat-message .etc-card .etc-die--hope-success {
+  background: rgb(242, 218, 105);
+}
+
+.etc-result {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.etc-result__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.etc-result__heading strong {
+  font-size: 0.95rem;
+}
+
+.etc-result__icon {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 1.1rem;
+  width: 1.1rem;
+  min-height: 1.1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.etc-result__icon--extinguished::after {
+  content: "";
+  position: absolute;
+  width: 1.25rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: rotate(-45deg);
+}
+
+.chat-message .etc-card .etc-result .etc-result__main {
+  color: inherit;
+  font-size: 0.8rem;
+}
+
+.chat-message .etc-card .etc-result .etc-result__note {
+  color: inherit;
+  font-size: 0.75rem;
+  opacity: 0.82;
+}
+
+.etc-result--provisional-success {
+  border-style: dashed;
+  border-color: rgb(82, 160, 51);
+  background: rgba(35, 105, 60, 0.521);
+  color: #dce6ad;
+}
+
+.etc-result--provisional-failure {
+  border-style: dashed;
+  border-color: rgba(212, 114, 34, 0.82);
+  background: rgba(85, 20, 30, 0.356);
+  color: #f0c986;
+}
+
+.etc-result--success {
+  border-color: rgba(80, 205, 120, 0.9);
+  background: rgba(35, 105, 60, 0.38);
+  color: #d7f5e0;
+  text-align: center;
+}
+
+.etc-result--provisional-success .etc-result__heading,
+.etc-result--success .etc-result__heading {
+  justify-content: center;
+}
+
+.etc-result--provisional-success {
+  text-align: center;
+}
+
+.etc-result--failure {
+  border-color: rgba(175, 65, 75, 0.9);
+  background: rgba(85, 20, 30, 0.52);
+  color: #f0bec4;
+}
+
+.etc-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.etc-actions--player {
+  display: grid;
+  min-width: 0;
+  align-self: stretch;
+  margin: 0;
+}
+
+.etc-actions__player {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  grid-auto-flow: row;
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 0.35rem;
+}
+
+.etc-actions__player > .etc-action {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+}
+
+.etc-actions__gm {
+  display: grid;
+}
+
+.etc-gm-row .etc-actions--gm,
+.etc-gm-row .etc-actions__gm {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+}
+
+.etc-gm-row .etc-actions__gm > .etc-action {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+}
+
+.chat-message .etc-card .etc-action {
+  display: inline-flex;
+  min-height: 2.1rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f4f5f7;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  box-shadow:
+    0 0.22rem 0.45rem rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.chat-message .etc-card .etc-actions--player .etc-action {
+  min-height: 0;
+  padding: 0.35rem 0.15rem;
+  line-height: 1;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.chat-message .etc-card .etc-action:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+  box-shadow:
+    0 0.36rem 0.62rem rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+}
+
+.chat-message .etc-card .etc-action:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow:
+    0 0.08rem 0.18rem rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(0, 0, 0, 0.34),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.chat-message .etc-card .etc-action--virtue {
+  border-color: rgba(125, 215, 155, 0.72);
+  background: rgba(45, 120, 75, 0.42);
+  color: #d9f5e2;
+}
+
+.chat-message .etc-card .etc-action--virtue:hover:not(:disabled) {
+  border-color: rgba(165, 240, 190, 0.95);
+  background: rgba(55, 155, 90, 0.62);
+  color: #ffffff;
+}
+
+.chat-message .etc-card .etc-action--vice {
+  border-color: rgba(160, 115, 200, 0.76);
+  background: rgba(75, 45, 105, 0.58);
+  color: #e4d3f2;
+}
+
+.chat-message .etc-card .etc-action--vice:hover:not(:disabled) {
+  border-color: rgba(195, 150, 235, 0.95);
+  background: rgba(105, 60, 145, 0.76);
+  color: #ffffff;
+}
+
+.chat-message .etc-card .etc-action--limit {
+  border-color: rgba(225, 95, 85, 0.82);
+  background: rgba(135, 35, 30, 0.62);
+  color: #ffd8d3;
+}
+
+.chat-message .etc-card .etc-action--limit:hover:not(:disabled) {
+  border-color: rgba(255, 135, 120, 1);
+  background: rgba(180, 45, 38, 0.82);
+  color: #ffffff;
+}
+
+.chat-message .etc-card .etc-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.chat-message .etc-card .etc-action--validate {
+  border-color: rgba(90, 210, 125, 0.55);
+  background: rgba(60, 130, 80, 0.28);
+}
+
+.chat-message .etc-conflict-card .etc-gm-row .etc-action--validate {
+  min-height: 0;
+  padding: 0.35rem 0.15rem;
+  line-height: 1;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 .etc-card__footer {
   padding-top: 0.4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.etc-ball-of-truths {
+  border-color: rgba(225, 100, 100, 0.6);
+}
+
+.etc-ball-transition-reserved-space {
+  box-sizing: border-box;
+  display: grid;
+  width: 100%;
+  min-width: 0;
+}
+
+.etc-ball-transition-reserved-space > * {
+  box-sizing: border-box;
+  grid-area: 1 / 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.etc-ball-transition__sizer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.etc-ball-transition__completed {
+  gap: 0.2rem;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.etc-ball-transition__completed strong {
+  font-size: 0.9rem;
+}
+
+.etc-ball-transition-reserved-space .etc-actions__gm {
+  align-self: stretch;
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.chat-message .etc-card .etc-action--next-scene {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.15;
+  text-align: center;
 }
 
 .etc-dialog {
@@ -102,16 +573,87 @@
   min-width: 300px;
 }
 
+.etc-dialog--wide {
+  width: min(720px, 75vw);
+}
+
 .etc-dialog label {
   display: grid;
   gap: 0.35rem;
 }
 
-.etc-dialog input[type="number"] {
+.etc-dialog input[type="number"],
+.etc-dialog input[type="text"],
+.etc-dialog select,
+.etc-dialog textarea {
   width: 100%;
+}
+
+.etc-dialog textarea {
+  min-height: 7rem;
+  resize: vertical;
+  font-family: monospace;
+  font-size: 0.8rem;
 }
 
 .etc-dialog__checkbox {
   grid-template-columns: auto 1fr;
   align-items: center;
 }
+
+.etc-dialog__section {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--color-border-light-2);
+  border-radius: 6px;
+}
+
+.etc-dialog__section legend {
+  padding: 0 0.35rem;
+  font-weight: 600;
+}
+
+.etc-dialog__help {
+  margin: 0;
+  color: var(--color-text-dark-secondary);
+  font-size: 0.85rem;
+}
+
+.chat-message .etc-card .etc-action--gm-roll {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.35rem;
+  height: 100%;
+  padding: 0.55rem 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 130, 130, 0.8);
+  background: rgba(155, 35, 35, 0.72);
+  color: #ffffff;
+  white-space: normal;
+  text-align: center;
+}
+
+.chat-message .etc-card .etc-action--gm-roll span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.chat-message .etc-card .etc-action--gm-roll:hover:not(:disabled) {
+  border-color: rgba(255, 185, 185, 1);
+  background: rgba(205, 45, 45, 0.9);
+  box-shadow: 0 0 0 1px rgba(255, 120, 120, 0.35);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.chat-message .etc-card .etc-action--gm-roll:disabled {
+  border-color: rgba(180, 110, 110, 0.45);
+  background: rgba(105, 45, 45, 0.45);
+  color: rgba(255, 255, 255, 0.75);
+  cursor: default;
+  opacity: 0.8;
+}
+

@@ -1,59 +1,56 @@
-# Evil Ten Candles Roll — 0.1.0
+# Evilbram Ten Candles Roll
 
-Première base technique de la phase 1.
+Module Foundry VTT 14 dédié au système `tencandles`.
 
-## Fonctionnalités présentes
+## Architecture des scripts
 
-- Bouton temporaire dans les contrôles de scène, groupe **Tokens**.
-- Clic d’un joueur : création d’une résolution et lancer du pool bleu.
-- Clic du MJ : lancer du pool rouge rattaché à la résolution active.
-- Une seule résolution active à la fois.
-- Carte de chat commune aux deux jets.
-- État persistant dans un réglage de monde.
-- Réglage MJ temporaire du nombre de bougies et du pool bleu restant.
-- Communication joueur → MJ sans dépendance externe.
+Le manifeste charge uniquement `scripts/main.js`. Ce point d’entrée importe ensuite les fichiers spécialisés :
+
+```text
+scripts/
+├── main.js           # Initialisation, hooks et API publique des macros
+├── constants.js      # Identifiants et constantes communes
+├── utils.js          # Fonctions génériques et lecture des formulaires
+├── state.js          # État persistant de la partie
+├── dice.js           # Lancers de d6 et analyse des résultats
+├── resources.js      # Actor, Vice, Vertu, Espoir et Limite
+├── resolution.js     # Cycle complet d’un conflit
+├── chat.js           # Cartes et messages du chat
+├── canvas-sync.js    # Bougies, lumières et dés du canevas
+├── dialogs.js        # Fenêtres de configuration
+├── socket.js         # Communication joueur → MJ
+├── notifications.js  # Notifications entre utilisateurs
+└── controls.js       # Boutons Tokens et actions du chat
+```
+
+## Repères de lecture
+
+- Pour comprendre **comment un jet est résolu**, commencer par `resolution.js`.
+- Pour comprendre **les règles des dés**, lire `dice.js`.
+- Pour comprendre **Vice, Vertu, Espoir et Limite**, lire `resources.js`.
+- Pour comprendre **les bougies et les dés sur la scène**, lire `canvas-sync.js`.
+- Pour modifier **l’affichage du chat**, utiliser `chat.js` et `styles/module.css`.
+- `main.js` doit rester court : il assemble le module mais ne contient pas les règles.
+
+## API disponible pour les macros
+
+```js
+game.evilTenCandlesRoll.requestPlayerRoll()
+game.evilTenCandlesRoll.requestGMRoll()
+game.evilTenCandlesRoll.openCanvasSetup()
+game.evilTenCandlesRoll.syncCanvas()
+game.evilTenCandlesRoll.openGMSetup()
+game.evilTenCandlesRoll.getSelectedActorResources()
+game.evilTenCandlesRoll.resetSelectedActorResources()
+game.evilTenCandlesRoll.resetState()
+```
 
 ## Installation manuelle
 
 Extraire le dossier `evil-tencandles-roll` dans :
 
-`Foundry Data/Data/modules/`
-
-Puis activer **Evil Ten Candles Roll** dans le monde.
-
-## État interne
-
-```js
-{
-  schemaVersion: 1,
-  stage: "scene",
-  litCandles: 10,
-  bluePoolRemaining: 10,
-  activeResolution: null,
-  lastResolution: null
-}
+```text
+Foundry Data/Data/modules/
 ```
 
-La résolution active contient l’instantané des bougies, les pools et les résultats.
-
-## Outils de développement
-
-Dans la console Foundry :
-
-```js
-game.evilTenCandlesRoll.getState()
-game.evilTenCandlesRoll.openGMSetup()
-game.evilTenCandlesRoll.cancelActiveResolution()
-game.evilTenCandlesRoll.resetState()
-```
-
-## Étape suivante
-
-Ajouter dans la carte de chat :
-
-- Vice
-- Vertu
-- Moment
-- Limite
-- Validation réservée au MJ
-- Interprétation finale
+Puis activer **Evilbram Ten Candles Roll** dans un monde utilisant le système `tencandles`.

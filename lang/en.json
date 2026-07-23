@@ -1,0 +1,56 @@
+{
+  "EVILTENCANDLES": {
+    "Controls": {
+      "PlayerRoll": "Ten Candles: roll the player pool",
+      "GMRoll": "Ten Candles: roll the GM pool",
+      "DevSettings": "Ten Candles: development settings"
+    },
+    "Status": {
+      "WaitingGM": "Waiting for the GM roll",
+      "PendingValidation": "Rolls combined — awaiting resolution",
+      "Resolved": "Resolution completed",
+      "Cancelled": "Resolution cancelled"
+    },
+    "Chat": {
+      "Title": "Ten Candles — Resolution",
+      "LitCandles": "lit candle(s)",
+      "PlayerDice": "player die/dice",
+      "GMDice": "GM die/dice",
+      "PlayerPool": "Player pool",
+      "GMPool": "GM pool",
+      "SixResults": "{count} result(s) of 6",
+      "OneResults": "{count} result(s) of 1",
+      "DiceCount": "{count} die/dice",
+      "DiceToRoll": "{count} die/dice to roll",
+      "GMWaiting": "The GM must click the Ten Candles button.",
+      "NoDice": "No dice",
+      "ResolutionId": "Resolution: {id}",
+      "DieTitle": "d6: {result}",
+      "SimulatedPlayerName": "Player simulation — {name}"
+    },
+    "Dialog": {
+      "Title": "Ten Candles — Development Settings",
+      "LitCandles": "Lit candles",
+      "BluePoolRemaining": "Blue dice still available",
+      "CancelResolution": "Cancel the active resolution",
+      "Save": "Save"
+    },
+    "Settings": {
+      "StateName": "Ten Candles internal state",
+      "StateHint": "Persistent state used by the module."
+    },
+    "Notifications": {
+      "GMOnly": "This action is restricted to the GM.",
+      "ActiveResolution": "A Ten Candles resolution is already active.",
+      "BallOfTruths": "The game is currently in the Ball of Truths.",
+      "NoBlueDice": "No blue dice are currently available.",
+      "PlayerRollDone": "{count} blue die/dice rolled.",
+      "NoPendingResolution": "No player resolution is waiting for the GM roll.",
+      "GMAlreadyRolled": "The red pool has already been rolled for this resolution.",
+      "SettingsSaved": "Ten Candles: {candles} candle(s), {dice} blue die/dice.",
+      "NoActiveGM": "No active GM is available to process the Ten Candles roll.",
+      "RollError": "An error occurred during the Ten Candles roll.",
+      "StateReset": "The Ten Candles state has been reset."
+    }
+  }
+}

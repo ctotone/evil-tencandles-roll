@@ -1,19 +1,43 @@
 {
   "id": "evil-tencandles-roll",
   "type": "module",
-  "title": "Evil Ten Candles Roll",
-  "description": "Module de gestion des lancers et des résolutions pour Ten Candles.",
-  "version": "0.1.0",
+  "title": "Evilbram Ten Candles Roll",
+  "description": "Gestion des lancers et des résolutions pour Ten Candles.",
+  "authors": [
+    {
+      "name": "Evilbram"
+    }
+  ],
+  "version": "0.1.1",
   "compatibility": {
     "minimum": "14",
-    "verified": "14.365"
+    "verified": "14"
   },
+  "system": [
+    "tencandles"
+  ],
   "esmodules": [
     "scripts/main.js"
   ],
   "styles": [
     "styles/module.css"
   ],
+  "languages": [
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
   "socket": true,
-  "media": []
+  "url": "https://github.com/ctotone/evil-tencandles-roll",
+  "manifest": "https://raw.githubusercontent.com/ctotone/evil-tencandles-roll/refs/heads/main/module.json",
+  "download": "https://github.com/ctotone/evil-tencandles-roll/releases/latest/download/evil-tencandles-roll.zip",
+  "readme": "README.md",
+  "bugs": "https://github.com/ctotone/evil-tencandles-roll/issues"
 }
