@@ -15,6 +15,7 @@ import {
 } from "./resolution.js";
 import { notifyRequester } from "./notifications.js";
 import { handleDice3DRollMessage } from "./dice.js";
+import { localize } from "./utils.js";
 
 export async function requestPlayerRoll() {
   const actor = await chooseCharacterActorForRoll();
@@ -85,7 +86,7 @@ export async function onSocketMessage(data) {
     notifyRequester(
       data.requesterId,
       "error",
-      "Une erreur est survenue pendant la résolution Ten Candles."
+      localize("Notifications.ResolutionError")
     );
   }
 }
@@ -95,7 +96,7 @@ export async function requestAction(action, payload = {}) {
 
   if (!activeGM) {
     ui.notifications.error(
-      "Aucun MJ actif n'est disponible pour traiter la résolution Ten Candles."
+      localize("Notifications.NoActiveGM")
     );
     return;
   }

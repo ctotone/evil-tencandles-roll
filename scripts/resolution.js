@@ -3,7 +3,7 @@
  */
 
 import { TOTAL_CANDLES } from "./constants.js";
-import { clone } from "./utils.js";
+import { clone, format, localize } from "./utils.js";
 import { getState, saveState } from "./state.js";
 import {
   countValue,
@@ -44,7 +44,7 @@ export function getActionResolution(requesterId, resolutionId) {
     notifyRequester(
       requesterId,
       "warn",
-      "Cette résolution n'est plus active."
+      localize("Notifications.ResolutionInactive")
     );
     return null;
   }
@@ -53,7 +53,7 @@ export function getActionResolution(requesterId, resolutionId) {
     notifyRequester(
       requesterId,
       "warn",
-      "Tu ne peux pas modifier cette résolution."
+      localize("Notifications.CannotModifyResolution")
     );
     return null;
   }
@@ -79,7 +79,7 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
     notifyRequester(
       requesterId,
       "warn",
-      "Aucun personnage Ten Candles valide n'a été fourni pour ce lancer."
+      localize("Notifications.InvalidActor")
     );
     return;
   }
@@ -88,7 +88,7 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
     notifyRequester(
       requesterId,
       "warn",
-      "Tu ne possèdes pas ce personnage."
+      localize("Notifications.NotOwner")
     );
     return;
   }
@@ -99,7 +99,7 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
     notifyRequester(
       requesterId,
       "warn",
-      "Une résolution Ten Candles est déjà en cours."
+      localize("Notifications.ActiveResolution")
     );
     return;
   }
@@ -108,7 +108,7 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
     notifyRequester(
       requesterId,
       "warn",
-      "La partie est actuellement au Bal des vérités."
+      localize("Notifications.BallActive")
     );
     return;
   }
@@ -117,7 +117,7 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
     notifyRequester(
       requesterId,
       "warn",
-      "Aucun dé bleu n'est actuellement disponible."
+      localize("Notifications.NoBlueDice")
     );
     return;
   }
@@ -205,8 +205,13 @@ export async function handlePlayerRoll(requesterId, actorUuid) {
     requesterId,
     "info",
     [
-      `${resolution.bluePoolSize} dé(s) bleu(s) lancé(s) pour ${actor.name}.`,
-      hopeResult !== null ? "Le dé d'Espoir a également été lancé." : ""
+      format("Notifications.PlayerRollDone", {
+        count: resolution.bluePoolSize,
+        name: actor.name
+      }),
+      hopeResult !== null
+        ? localize("Notifications.HopeRolled")
+        : ""
     ].filter(Boolean).join(" ")
   );
 }
@@ -221,7 +226,7 @@ export async function handleGMRoll(requesterId, requestedResolutionId = null) {
     notifyRequester(
       requesterId,
       "warn",
-      "Aucune résolution joueur n'attend le lancer du MJ."
+      localize("Notifications.NoPendingResolution")
     );
     return;
   }
@@ -230,7 +235,7 @@ export async function handleGMRoll(requesterId, requestedResolutionId = null) {
     notifyRequester(
       requesterId,
       "warn",
-      "Cette carte ne correspond plus à la résolution active."
+      localize("Notifications.CardOutdated")
     );
     return;
   }
@@ -239,7 +244,7 @@ export async function handleGMRoll(requesterId, requestedResolutionId = null) {
     notifyRequester(
       requesterId,
       "warn",
-      "Le pool du MJ a déjà été lancé pour cette résolution."
+      localize("Notifications.GMAlreadyRolled")
     );
     return;
   }
@@ -267,7 +272,7 @@ export async function handleViceOrVirtue(requesterId, resolutionId, resource) {
   const actor = await refreshResolutionResources(resolution);
 
   if (!actor) {
-    notifyRequester(requesterId, "warn", "Le personnage lié à cette résolution est introuvable.");
+    notifyRequester(requesterId, "warn", localize("Notifications.ActorMissing"));
     return;
   }
 
@@ -276,7 +281,11 @@ export async function handleViceOrVirtue(requesterId, resolutionId, resource) {
     notifyRequester(
       requesterId,
       "warn",
-      `${resource === "vice" ? "Le Vice" : "La Vertu"} n'est plus disponible.`
+      format("Notifications.ResourceUnavailable", {
+        resource: resource === "vice"
+          ? localize("Resources.Vice")
+          : localize("Resources.Virtue")
+      })
     );
     return;
   }
@@ -285,7 +294,7 @@ export async function handleViceOrVirtue(requesterId, resolutionId, resource) {
     notifyRequester(
       requesterId,
       "warn",
-      "Le Vice ou la Vertu a déjà été utilisé sur cette résolution."
+      localize("Notifications.ViceVirtueUsed")
     );
     return;
   }
@@ -295,7 +304,7 @@ export async function handleViceOrVirtue(requesterId, resolutionId, resource) {
     notifyRequester(
       requesterId,
       "warn",
-      "Aucun résultat de 1 n'est disponible à relancer."
+      localize("Notifications.NoOnes")
     );
     return;
   }
@@ -335,7 +344,7 @@ export async function handleLimit(requesterId, resolutionId) {
   const actor = await refreshResolutionResources(resolution);
 
   if (!actor) {
-    notifyRequester(requesterId, "warn", "Le personnage lié à cette résolution est introuvable.");
+    notifyRequester(requesterId, "warn", localize("Notifications.ActorMissing"));
     return;
   }
 
@@ -343,7 +352,7 @@ export async function handleLimit(requesterId, resolutionId) {
     notifyRequester(
       requesterId,
       "warn",
-      "La Limite ne sera disponible qu'au prochain conflit, après consommation du Vice et de la Vertu."
+      localize("Notifications.LimitNextConflict")
     );
     return;
   }
@@ -352,7 +361,7 @@ export async function handleLimit(requesterId, resolutionId) {
     notifyRequester(
       requesterId,
       "warn",
-      "La Limite a déjà été utilisée sur cette résolution."
+      localize("Notifications.LimitUsed")
     );
     return;
   }
@@ -469,7 +478,7 @@ export async function handleStartNextScene(requesterId, payload = {}) {
     notifyRequester(
       requesterId,
       "warn",
-      "La partie n'est pas actuellement au Bal des vérités."
+      localize("Notifications.NotBallActive")
     );
     return;
   }
@@ -478,7 +487,7 @@ export async function handleStartNextScene(requesterId, payload = {}) {
     notifyRequester(
       requesterId,
       "warn",
-      "Toutes les bougies sont déjà éteintes."
+      localize("Notifications.AllCandlesOut")
     );
     return;
   }
@@ -510,7 +519,10 @@ export async function handleStartNextScene(requesterId, payload = {}) {
   notifyRequester(
     requesterId,
     "info",
-    `Nouvelle scène : ${state.litCandles} bougie(s) et ${state.bluePoolRemaining} dé(s) joueur.`
+    format("Notifications.NextScene", {
+      candles: state.litCandles,
+      dice: state.bluePoolRemaining
+    })
   );
 }
 

@@ -3,6 +3,7 @@
  */
 
 import { MODULE_ID } from "./constants.js";
+import { format, localize } from "./utils.js";
 import { getState } from "./state.js";
 import { syncCanvasSafely } from "./canvas-sync.js";
 import {
@@ -75,7 +76,7 @@ export function activateChatMessageActions(message, html) {
     trigger.disabled = !game.user.isGM;
 
     if (!game.user.isGM) {
-      trigger.title = "En attente du lancer du MJ";
+      trigger.title = localize("Controls.WaitingGM");
     }
   }
 
@@ -110,41 +111,41 @@ function getFloatingRollButtonState() {
   if (floatingRollBusy) {
     return {
       disabled: true,
-      title: "Préparation du conflit en cours..."
+      title: localize("Controls.Busy")
     };
   }
 
   if (!activeGM) {
     return {
       disabled: true,
-      title: "Aucun MJ actif n'est disponible."
+      title: localize("Controls.NoActiveGM")
     };
   }
 
   if (state.activeResolution) {
     return {
       disabled: true,
-      title: "Un conflit est déjà en cours de résolution."
+      title: localize("Controls.ConflictActive")
     };
   }
 
   if (state.stage !== "scene") {
     return {
       disabled: true,
-      title: "La partie est actuellement au Bal des vérités."
+      title: localize("Controls.BallActive")
     };
   }
 
   if (state.bluePoolRemaining <= 0) {
     return {
       disabled: true,
-      title: "Aucun dé joueur n'est disponible pour lancer un conflit."
+      title: localize("Controls.NoPlayerDice")
     };
   }
 
   return {
     disabled: false,
-    title: "Lancer un nouveau conflit."
+    title: localize("Controls.StartConflict")
   };
 }
 
@@ -156,7 +157,7 @@ export function refreshFloatingPlayerRollButton() {
 
   button.disabled = state.disabled;
   button.title = state.title;
-  button.setAttribute("aria-label", `Lancer les dés — ${state.title}`);
+  button.setAttribute("aria-label", format("Controls.RollDiceAria", { state: state.title }));
   button.setAttribute("aria-busy", floatingRollBusy ? "true" : "false");
   button.classList.toggle("etc-floating-roll--busy", floatingRollBusy);
 }
@@ -171,7 +172,7 @@ export function mountFloatingPlayerRollButton() {
     button.className = "etc-floating-roll";
     button.innerHTML = `
       <i class="fa-solid fa-dice-d6" aria-hidden="true"></i>
-      <span>Lancer les dés</span>
+      <span>${localize("Controls.RollDice")}</span>
     `;
 
     button.addEventListener("click", async (event) => {
@@ -200,7 +201,7 @@ export function mountFloatingPlayerRollButton() {
 
 async function resetSelectedActorResourcesFromControl() {
   if (!game.user.isGM) {
-    ui.notifications.warn("Cette action est réservée au MJ.");
+    ui.notifications.warn(localize("Notifications.GMOnly"));
     return false;
   }
 
@@ -249,7 +250,7 @@ export function registerSceneControlButtons(controls) {
     // Accès joueur conservé dans Tokens en complément du bouton flottant.
     tokenControl.tools["evil-tencandles-player-roll"] = {
       name: "evil-tencandles-player-roll",
-      title: "Ten Candles : lancer le pool joueur",
+      title: localize("Controls.PlayerRoll"),
       icon: "fa-solid fa-dice-d6",
       order: Object.keys(tokenControl.tools).length,
       button: true,
@@ -262,7 +263,7 @@ export function registerSceneControlButtons(controls) {
 
   controls["evil-tencandles-gm"] = {
     name: "evil-tencandles-gm",
-    title: "Ten Candles — Régie MJ",
+    title: localize("Controls.GMPanel"),
     icon: "fa-solid fa-fire-flame-curved",
     order: getTenCandlesControlOrder(controls),
     visible: true,
@@ -282,7 +283,7 @@ export function registerSceneControlButtons(controls) {
     tools: {
       "evil-tencandles-gm-roll": {
         name: "evil-tencandles-gm-roll",
-        title: "Ten Candles : lancer le pool MJ",
+        title: localize("Controls.GMRoll"),
         icon: "fa-solid fa-dice",
         order: 0,
         button: true,
@@ -292,7 +293,7 @@ export function registerSceneControlButtons(controls) {
 
       "evil-tencandles-resource-status": {
         name: "evil-tencandles-resource-status",
-        title: "Ten Candles : contrôler Vertu, Vice et Limite",
+        title: localize("Controls.ResourceStatus"),
         icon: "fa-solid fa-eye",
         order: 1,
         button: true,
@@ -302,7 +303,7 @@ export function registerSceneControlButtons(controls) {
 
       "evil-tencandles-resource-reset": {
         name: "evil-tencandles-resource-reset",
-        title: "Ten Candles : réinitialiser Vertu et Vice",
+        title: localize("Controls.ResourceReset"),
         icon: "fa-solid fa-rotate-left",
         order: 2,
         button: true,
@@ -312,7 +313,7 @@ export function registerSceneControlButtons(controls) {
 
       "evil-tencandles-scene-install": {
         name: OFFICIAL_SCENE_INSTALL_TOOL,
-        title: "Ten Candles : installer la scène « Le monde est sombre... »",
+        title: localize("Controls.SceneInstall"),
         icon: "fa-solid fa-map-location-dot",
         order: 3,
         button: true,
@@ -327,7 +328,7 @@ export function registerSceneControlButtons(controls) {
 
       "evil-tencandles-canvas-config": {
         name: "evil-tencandles-canvas-config",
-        title: "Ten Candles : configurer le canevas",
+        title: localize("Controls.CanvasConfig"),
         icon: "fa-solid fa-link",
         order: 4,
         button: true,
@@ -337,7 +338,7 @@ export function registerSceneControlButtons(controls) {
 
       "evil-tencandles-canvas-sync": {
         name: "evil-tencandles-canvas-sync",
-        title: "Ten Candles : synchroniser le canevas",
+        title: localize("Controls.CanvasSync"),
         icon: "fa-solid fa-arrows-rotate",
         order: 5,
         button: true,
@@ -347,7 +348,7 @@ export function registerSceneControlButtons(controls) {
 
       "evil-tencandles-dev-settings": {
         name: "evil-tencandles-dev-settings",
-        title: "Ten Candles : réglages de développement",
+        title: localize("Controls.DevSettings"),
         icon: "fa-solid fa-gear",
         order: 6,
         button: true,

@@ -7,6 +7,8 @@ import {
   clampInteger,
   clone,
   escapeHTML,
+  format,
+  localize,
   readDialogForm,
   uuidsToTextarea
 } from "./utils.js";
@@ -24,12 +26,12 @@ export async function openGMSetup() {
   const state = getState();
   const result = await foundry.applications.api.DialogV2.input({
     window: {
-      title: "Ten Candles — Réglages de développement"
+      title: localize("Dialogs.DevTitle")
     },
     content: `
       <div class="etc-dialog">
         <label>
-          <span>Bougies allumées</span>
+          <span>${localize("Dialogs.LitCandles")}</span>
           <input
             type="number"
             name="litCandles"
@@ -41,7 +43,7 @@ export async function openGMSetup() {
         </label>
 
         <label>
-          <span>Dés bleus encore disponibles</span>
+          <span>${localize("Dialogs.BlueDiceRemaining")}</span>
           <input
             type="number"
             name="bluePoolRemaining"
@@ -53,23 +55,23 @@ export async function openGMSetup() {
         </label>
 
         <label>
-          <span>Étape actuelle</span>
+          <span>${localize("Dialogs.CurrentStage")}</span>
           <select name="stage">
             <option value="scene" ${state.stage === "scene" ? "selected" : ""}>
-              Scène
+              ${localize("Common.Scene")}
             </option>
             <option
               value="ball-of-truths"
               ${state.stage === "ball-of-truths" ? "selected" : ""}
             >
-              Bal des vérités
+              ${localize("Common.BallOfTruths")}
             </option>
           </select>
         </label>
 
         <label class="etc-dialog__checkbox">
           <input type="checkbox" name="cancelResolution">
-          <span>Annuler la résolution active</span>
+          <span>${localize("Dialogs.CancelResolution")}</span>
         </label>
 
         <label class="etc-dialog__checkbox">
@@ -78,12 +80,12 @@ export async function openGMSetup() {
             name="syncCanvas"
             ${state.canvasSync.enabled ? "checked" : ""}
           >
-          <span>Synchroniser le canevas après l'enregistrement</span>
+          <span>${localize("Dialogs.SyncAfterSave")}</span>
         </label>
       </div>
     `,
     ok: {
-      label: "Enregistrer",
+      label: localize("Common.Save"),
       callback: (_event, button) => {
         const fields = readDialogForm(button);
 
@@ -126,7 +128,10 @@ export async function openGMSetup() {
   }
 
   ui.notifications.info(
-    `Ten Candles : ${litCandles} bougie(s), ${bluePoolRemaining} dé(s) bleu(s).`
+    format("Dialogs.StateSaved", {
+      candles: litCandles,
+      dice: bluePoolRemaining
+    })
   );
 }
 
@@ -139,14 +144,12 @@ export async function openCanvasSetup() {
 
   const result = await foundry.applications.api.DialogV2.input({
     window: {
-      title: "Ten Candles — Configuration du canevas"
+      title: localize("Dialogs.CanvasTitle")
     },
     content: `
       <div class="etc-dialog etc-dialog--wide">
         <p class="etc-dialog__help">
-          Les UUID doivent être placés dans l'ordre, un par ligne.
-          Les premiers éléments restent visibles ; les derniers sont masqués
-          lorsque le nombre de bougies ou de dés diminue.
+          ${localize("Dialogs.CanvasHelp")}
         </p>
 
         <label class="etc-dialog__checkbox">
@@ -155,11 +158,11 @@ export async function openCanvasSetup() {
             name="enabled"
             ${config.enabled ? "checked" : ""}
           >
-          <span>Activer la synchronisation du canevas</span>
+          <span>${localize("Dialogs.EnableCanvasSync")}</span>
         </label>
 
         <label>
-          <span>ID de la scène Ten Candles</span>
+          <span>${localize("Dialogs.SceneId")}</span>
           <input
             type="text"
             name="sceneId"
@@ -169,57 +172,57 @@ export async function openCanvasSetup() {
         </label>
 
         <fieldset class="etc-dialog__section">
-          <legend>Bougies</legend>
+          <legend>${localize("Dialogs.Candles")}</legend>
 
           <label>
-            <span>UUID des flammes — Tiles ou Tokens</span>
+            <span>${localize("Dialogs.FlameUuids")}</span>
             <textarea
               name="candleFlameUuids"
               rows="6"
-              placeholder="Un UUID par ligne"
+              placeholder="${localize("Common.UUIDPerLine")}"
             >${uuidsToTextarea(config.candleFlameUuids)}</textarea>
           </label>
 
           <label>
-            <span>UUID des lumières — AmbientLight</span>
+            <span>${localize("Dialogs.LightUuids")}</span>
             <textarea
               name="candleLightUuids"
               rows="6"
-              placeholder="Un UUID par ligne"
+              placeholder="${localize("Common.UUIDPerLine")}"
             >${uuidsToTextarea(config.candleLightUuids)}</textarea>
           </label>
         </fieldset>
 
         <fieldset class="etc-dialog__section">
-          <legend>Dés sur le canevas</legend>
+          <legend>${localize("Dialogs.CanvasDice")}</legend>
 
           <label>
-            <span>UUID des dés bleus — Tiles ou Tokens</span>
+            <span>${localize("Dialogs.BlueDieUuids")}</span>
             <textarea
               name="blueDieUuids"
               rows="6"
-              placeholder="Un UUID par ligne"
+              placeholder="${localize("Common.UUIDPerLine")}"
             >${uuidsToTextarea(config.blueDieUuids)}</textarea>
           </label>
 
           <label>
-            <span>UUID des dés rouges — Tiles ou Tokens</span>
+            <span>${localize("Dialogs.RedDieUuids")}</span>
             <textarea
               name="redDieUuids"
               rows="6"
-              placeholder="Un UUID par ligne"
+              placeholder="${localize("Common.UUIDPerLine")}"
             >${uuidsToTextarea(config.redDieUuids)}</textarea>
           </label>
         </fieldset>
 
         <label class="etc-dialog__checkbox">
           <input type="checkbox" name="syncNow" checked>
-          <span>Synchroniser immédiatement après l'enregistrement</span>
+          <span>${localize("Dialogs.SyncNow")}</span>
         </label>
       </div>
     `,
     ok: {
-      label: "Enregistrer",
+      label: localize("Common.Save"),
       callback: (_event, button) => {
         const fields = readDialogForm(button);
 
@@ -256,11 +259,23 @@ export async function openCanvasSetup() {
 
   ui.notifications.info(
     [
-      `Configuration enregistrée — synchronisation : ${savedConfig.enabled ? "ACTIVÉE" : "DÉSACTIVÉE"}`,
-      `${savedConfig.candleFlameUuids.length} flamme(s)`,
-      `${savedConfig.candleLightUuids.length} lumière(s)`,
-      `${savedConfig.blueDieUuids.length} dé(s) joueur`,
-      `${savedConfig.redDieUuids.length} dé(s) MJ`
+      format("Dialogs.CanvasConfigSaved", {
+        state: savedConfig.enabled
+          ? localize("Common.Enabled")
+          : localize("Common.Disabled")
+      }),
+      format("Dialogs.FlameCount", {
+        count: savedConfig.candleFlameUuids.length
+      }),
+      format("Dialogs.LightCount", {
+        count: savedConfig.candleLightUuids.length
+      }),
+      format("Dialogs.BlueDieCount", {
+        count: savedConfig.blueDieUuids.length
+      }),
+      format("Dialogs.RedDieCount", {
+        count: savedConfig.redDieUuids.length
+      })
     ].join(" — ")
   );
 

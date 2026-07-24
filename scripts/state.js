@@ -6,6 +6,7 @@ import { MODULE_ID, STATE_KEY, TOTAL_CANDLES } from "./constants.js";
 import {
   clampInteger,
   clone,
+  localize,
   normalizeSceneId,
   normalizeUuidList
 } from "./utils.js";
@@ -141,7 +142,7 @@ export function getState() {
 
 export async function saveState(state) {
   if (!game.user.isGM) {
-    throw new Error(`${MODULE_ID} | Seul un MJ peut enregistrer l'état du module.`);
+    throw new Error(localize("Notifications.GMOnly"));
   }
 
   return game.settings.set(MODULE_ID, STATE_KEY, normalizeState(state));

@@ -20,12 +20,17 @@ import {
   saveState
 } from "./state.js";
 import { syncCanvasSafely } from "./canvas-sync.js";
+import { format, localize } from "./utils.js";
 
 export const SCENE_INSTALLER_BUILD =
   "scene-installer-20260724";
 
-export const OFFICIAL_SCENE_NAME =
+const OFFICIAL_SCENE_SOURCE_NAME =
   "Le monde est sombre...";
+
+export function getOfficialSceneName() {
+  return localize("Scene.OfficialName");
+}
 
 export const OFFICIAL_SCENE_TEMPLATE_ID =
   "le-monde-est-sombre";
@@ -118,13 +123,17 @@ async function getOfficialSceneTemplate() {
 
   if (!pack) {
     throw new Error(
-      `Compendium ${OFFICIAL_SCENE_PACK_ID} introuvable.`
+      format("SceneInstaller.PackMissing", {
+        pack: OFFICIAL_SCENE_PACK_ID
+      })
     );
   }
 
   if (pack.documentName !== "Scene") {
     throw new Error(
-      `Le compendium ${OFFICIAL_SCENE_PACK_ID} n'est pas de type Scene.`
+      format("SceneInstaller.PackWrongType", {
+        pack: OFFICIAL_SCENE_PACK_ID
+      })
     );
   }
 
@@ -134,13 +143,16 @@ async function getOfficialSceneTemplate() {
     scenes.find(isOfficialScene)
     ?? scenes.find(
       (scene) =>
-        scene.name === OFFICIAL_SCENE_NAME
+        scene.name === OFFICIAL_SCENE_SOURCE_NAME ||
+        scene.name === getOfficialSceneName()
     )
     ?? null;
 
   if (!template) {
     throw new Error(
-      `Aucune scène officielle dans ${OFFICIAL_SCENE_PACK_ID}.`
+      format("SceneInstaller.TemplateMissing", {
+        pack: OFFICIAL_SCENE_PACK_ID
+      })
     );
   }
 
@@ -165,7 +177,7 @@ async function importOfficialScene() {
       pack,
       template.id,
       {
-        name: OFFICIAL_SCENE_NAME,
+        name: getOfficialSceneName(),
         navigation: true,
         active: false,
         folder: null
@@ -174,7 +186,7 @@ async function importOfficialScene() {
 
   if (!importedScene) {
     throw new Error(
-      "Foundry n’a pas renvoyé la scène importée."
+      localize("SceneInstaller.ImportFailed")
     );
   }
 
@@ -196,8 +208,8 @@ async function getOrImportOfficialScene() {
   if (installedScenes.length > 1) {
     throw new Error(
       [
-        "Plusieurs scènes officielles sont présentes.",
-        "Supprime les doublons avant de relancer."
+        localize("SceneInstaller.MultipleScenes"),
+        localize("SceneInstaller.DeleteDuplicates")
       ].join(" ")
     );
   }
@@ -251,11 +263,12 @@ async function activateAndViewScene(scene) {
     },
     {
       errorMessage: [
-        "Foundry n’a pas activé ou affiché la scène.",
-        `Attendue : ${scene.id}.`,
-        `Active : ${game.scenes.active?.id ?? "aucune"}.`,
-        `Vue : ${game.scenes.viewed?.id ?? "aucune"}.`,
-        `Canevas : ${canvas.scene?.id ?? "aucun"}.`
+        format("SceneInstaller.ActivationFailed", {
+          expected: scene.id,
+          active: game.scenes.active?.id ?? localize("Common.None"),
+          viewed: game.scenes.viewed?.id ?? localize("Common.None"),
+          canvas: canvas.scene?.id ?? localize("Common.None")
+        })
       ].join(" ")
     }
   );
@@ -340,7 +353,10 @@ function extractIndexedDocuments(
 
   if (missing.length) {
     throw new Error(
-      `${label} introuvables : ${missing.join(", ")}.`
+      format("SceneInstaller.ElementsMissing", {
+        label,
+        missing: missing.join(", ")
+      })
     );
   }
 
@@ -356,7 +372,7 @@ function findSceneDocuments(scene) {
     candleFlames: extractIndexedDocuments(
       [...scene.tiles],
       {
-        label: "Flammes",
+        label: localize("SceneInstaller.Flames"),
         role: "candle-flame",
         namePattern: /^Flamme\s+(\d+)$/i
       }
@@ -365,7 +381,7 @@ function findSceneDocuments(scene) {
     candleLights: extractIndexedDocuments(
       [...scene.lights],
       {
-        label: "Lumières de bougie",
+        label: localize("SceneInstaller.CandleLights"),
         role: "candle-light",
         namePattern: /^Lumière\s+(\d+)$/i
       }
@@ -374,7 +390,7 @@ function findSceneDocuments(scene) {
     blueDice: extractIndexedDocuments(
       [...scene.tiles],
       {
-        label: "Dés bleus",
+        label: localize("SceneInstaller.BlueDice"),
         role: "blue-die",
         namePattern: /^D bleu\s+(\d+)$/i
       }
@@ -383,7 +399,7 @@ function findSceneDocuments(scene) {
     redDice: extractIndexedDocuments(
       [...scene.tiles],
       {
-        label: "Dés rouges",
+        label: localize("SceneInstaller.RedDice"),
         role: "red-die",
         namePattern: /^D rouge\s+(\d+)$/i
       }
@@ -545,9 +561,10 @@ function assertCanvasConfiguration(
   if (canvasSync.sceneId !== sceneId) {
     throw new Error(
       [
-        "La configuration cible une autre scène.",
-        `Attendue : ${sceneId}.`,
-        `Configurée : ${canvasSync.sceneId ?? "aucune"}.`
+        format("SceneInstaller.WrongTarget", {
+          expected: sceneId,
+          configured: canvasSync.sceneId ?? localize("Common.None")
+        })
       ].join(" ")
     );
   }
@@ -567,7 +584,10 @@ function assertCanvasConfiguration(
     !== TOTAL_CANDLES * 4
   ) {
     throw new Error(
-      `40 UUID attendus, ${allUuids.length} trouvés.`
+      format("SceneInstaller.UuidCount", {
+        expected: TOTAL_CANDLES * 4,
+        found: allUuids.length
+      })
     );
   }
 
@@ -580,7 +600,9 @@ function assertCanvasConfiguration(
 
   if (invalidUuid) {
     throw new Error(
-      `UUID extérieur détecté : ${invalidUuid}.`
+      format("SceneInstaller.ExternalUuid", {
+        uuid: invalidUuid
+      })
     );
   }
 }
@@ -633,15 +655,14 @@ async function persistConfiguration(
     },
     {
       errorMessage: [
-        "La configuration n’a pas été enregistrée.",
-        `Scène attendue : ${scene.id}.`,
-        `Scène lue : ${
-          game.settings.get(
+        format("SceneInstaller.ConfigNotSaved", {
+          expected: scene.id,
+          read: game.settings.get(
             MODULE_ID,
             STATE_KEY
           )?.canvasSync?.sceneId
-          ?? "aucune"
-        }.`
+            ?? localize("Common.None")
+        })
       ].join(" ")
     }
   );
@@ -717,7 +738,7 @@ async function finalizeOfficialScene(
 
   if (!report) {
     throw new Error(
-      "Aucun rapport de synchronisation."
+      localize("SceneInstaller.NoSyncReport")
     );
   }
 
@@ -729,12 +750,11 @@ async function finalizeOfficialScene(
     report.errors.length
   ) {
     throw new Error(
-      [
-        "Synchronisation incomplète.",
-        `${report.invalid.length} invalide(s),`,
-        `${report.missing.length} manquant(s),`,
-        `${report.errors.length} erreur(s).`
-      ].join(" ")
+      format("SceneInstaller.SyncIncomplete", {
+        invalid: report.invalid.length,
+        missing: report.missing.length,
+        errors: report.errors.length
+      })
     );
   }
 
@@ -751,8 +771,12 @@ async function finalizeOfficialScene(
   if (notify) {
     ui.notifications.info(
       activate
-        ? `La scène « ${OFFICIAL_SCENE_NAME} » est activée et configurée.`
-        : `La scène « ${OFFICIAL_SCENE_NAME} » est configurée.`
+        ? format("SceneInstaller.ActivatedConfigured", {
+            name: getOfficialSceneName()
+          })
+        : format("SceneInstaller.Configured", {
+            name: getOfficialSceneName()
+          })
     );
   }
 
@@ -866,8 +890,10 @@ export function repairOfficialSceneInstallation({
         if (officialScenes.length !== 1) {
           throw new Error(
             [
-              "Une seule scène officielle doit être présente.",
-              `${officialScenes.length} trouvée(s).`
+              localize("SceneInstaller.OneOfficialScene"),
+              format("SceneInstaller.SceneCount", {
+                count: officialScenes.length
+              })
             ].join(" ")
           );
         }
@@ -897,9 +923,9 @@ export function repairOfficialSceneInstallation({
         if (notify) {
           ui.notifications.error(
             [
-              "Réparation de la scène impossible.",
+              localize("SceneInstaller.RepairFailed"),
               error.message,
-              "Consulte la console F12."
+              localize("SceneInstaller.CheckConsole")
             ].join(" ")
           );
         }
@@ -920,7 +946,9 @@ export function installOfficialScene() {
       });
 
       ui.notifications.info(
-        `Installateur chargé : ${SCENE_INSTALLER_BUILD}`
+        format("SceneInstaller.Loaded", {
+          build: SCENE_INSTALLER_BUILD
+        })
       );
 
       try {
@@ -943,8 +971,8 @@ export function installOfficialScene() {
 
         ui.notifications.info(
           alreadyInstalled
-            ? "Scène officielle réutilisée, activée et reconfigurée."
-            : "Scène officielle importée, activée et configurée."
+            ? localize("SceneInstaller.Reused")
+            : localize("SceneInstaller.Imported")
         );
 
         return finalizedScene;
@@ -963,9 +991,9 @@ export function installOfficialScene() {
 
         ui.notifications.error(
           [
-            "Installation de la scène impossible.",
+            localize("SceneInstaller.InstallFailed"),
             error.message,
-            "Consulte la console F12."
+            localize("SceneInstaller.CheckConsole")
           ].join(" ")
         );
 

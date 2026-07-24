@@ -4,37 +4,30 @@
 
 import { MODULE_ID } from "./constants.js";
 import { countValue, getResolutionAnalysis } from "./dice.js";
-import { escapeHTML } from "./utils.js";
+import { escapeHTML, format, localize } from "./utils.js";
 
-const DARKNESS_MESSAGES = Object.freeze({
-  9: "Une flamme s’éteint. L’obscurité gagne en présence, encore contenue, mais déjà assez proche pour peser sur chaque souffle.",
-  8: "La lumière recule. Les ombres s’épaississent, se resserrent, et leur silence semble attendre la moindre faiblesse.",
-  7: "L’obscurité s’étend davantage. Chaque flamme paraît plus fragile, comme si les ténèbres apprenaient à les étouffer.",
-  6: "La lumière devient rare. Les ombres avalent les contours et laissent derrière elles une inquiétude sourde, presque tangible.",
-  5: "La moitié des flammes a disparu. L’obscurité n’entoure plus seulement le groupe : elle semble désormais l’observer.",
-  4: "Les ténèbres prennent toute la place. Chaque lumière vacille sous leur poids, et le moindre souffle paraît menaçant.",
-  3: "Il ne reste presque plus rien pour repousser l’obscurité. Les ombres se pressent, épaisses, proches, impossibles à ignorer.",
-  2: "Deux flammes seulement résistent encore. L’obscurité se fait totale, lourde, silencieuse, prête à tout engloutir.",
-  1: "Une seule flamme demeure. Le Dernier combat commence, tandis que l’obscurité attend, immense, immobile et sans pitié."
+const DARKNESS_MESSAGE_KEYS = Object.freeze({
+  9: "Atmosphere.Darkness9",
+  8: "Atmosphere.Darkness8",
+  7: "Atmosphere.Darkness7",
+  6: "Atmosphere.Darkness6",
+  5: "Atmosphere.Darkness5",
+  4: "Atmosphere.Darkness4",
+  3: "Atmosphere.Darkness3",
+  2: "Atmosphere.Darkness2",
+  1: "Atmosphere.Darkness1"
 });
 
-
-const CHARACTER_DEPARTURE_MESSAGES = Object.freeze([
-  "[PERSONNAGE] atteint le bout de son chemin. Sa lumière s’éloigne doucement, laissant aux autres la force de poursuivre sans lui.",
-  "[PERSONNAGE] quitte le cercle des flammes. Son passage demeure pourtant, comme une empreinte discrète que l’obscurité ne peut effacer.",
-  "Pour [PERSONNAGE], le voyage s’arrête ici. Son histoire se referme sans bruit, mais ses traces continueront d’accompagner les autres.",
-  "[PERSONNAGE] laisse sa place au silence. Ce qu’il a porté reste suspendu dans l’air, prêt à guider ceux qui poursuivent encore.",
-  "La route de [PERSONNAGE] s’incline ailleurs. Il disparaît du récit, mais l’écho de ses choix demeure au cœur de ceux qui restent.",
-  "[PERSONNAGE] franchit un seuil que les autres ne peuvent suivre. Sa lumière se retire, sans que son souvenir cesse de les accompagner.",
-  "Le chapitre de [PERSONNAGE] s’achève. La page se tourne avec douceur, tandis que ce qu’il a semé continue de vivre dans le récit.",
-  "[PERSONNAGE] s’éloigne du cercle, porté vers un horizon invisible. Derrière lui demeure une lueur que l’obscurité ne peut reprendre.",
-  "Le chemin se sépare pour [PERSONNAGE]. Sa présence s’efface, mais quelque chose de lui reste auprès de ceux qui avancent encore.",
-  "[PERSONNAGE] atteint la dernière ligne de son histoire. Le rideau tombe sans fracas, laissant derrière lui une lumière douce et tenace."
-]);
+const CHARACTER_DEPARTURE_MESSAGE_KEYS = Object.freeze(
+  Array.from(
+    { length: 10 },
+    (_value, index) => `Atmosphere.Departure${index + 1}`
+  )
+);
 
 export function renderDice(results, color) {
   if (!results?.length) {
-    return '<span class="etc-empty">Aucun dé</span>';
+    return `<span class="etc-empty">${localize("Common.NoDice")}</span>`;
   }
 
   return results
@@ -58,7 +51,7 @@ export function renderDice(results, color) {
       return `
         <span
           class="${classes.join(" ")}"
-          title="d6 : ${result}"
+          title="${format("Chat.DieTitle", { result })}"
         >${result}</span>
       `;
     })
@@ -70,7 +63,7 @@ export function renderMomentSection(resolution) {
 
   return `
     <div class="etc-player-hope">
-      <strong>Espoir</strong>
+      <strong>${localize("Chat.Hope")}</strong>
       <div class="etc-dice-row etc-dice-row--hope">
         ${renderDice([resolution.momentResult], "moment")}
       </div>
@@ -95,10 +88,10 @@ export function renderPlayerActionButtons(resolution) {
         class="etc-action etc-action--virtue"
         data-etc-action="use-virtue"
         ${viceOrVirtueUsedThisRoll || !hasOnes ? "disabled" : ""}
-        title="Utiliser pour relancer les 1"
-        aria-label="Vertu — Utiliser pour relancer les 1"
+        title="${localize("Chat.RerollOnes")}"
+        aria-label="${localize("Chat.VirtueAria")}"
       >
-        Vertu
+        ${localize("Resources.Virtue")}
       </button>
     `);
   }
@@ -110,10 +103,10 @@ export function renderPlayerActionButtons(resolution) {
         class="etc-action etc-action--vice"
         data-etc-action="use-vice"
         ${viceOrVirtueUsedThisRoll || !hasOnes ? "disabled" : ""}
-        title="Utiliser pour relancer les 1"
-        aria-label="Vice — Utiliser pour relancer les 1"
+        title="${localize("Chat.RerollOnes")}"
+        aria-label="${localize("Chat.ViceAria")}"
       >
-        Vice
+        ${localize("Resources.Vice")}
       </button>
     `);
   }
@@ -124,10 +117,10 @@ export function renderPlayerActionButtons(resolution) {
         type="button"
         class="etc-action etc-action--limit"
         data-etc-action="use-limit"
-        title="Accepter le pire pour relancer tous les dés"
-        aria-label="Limite — Accepter le pire pour relancer tous les dés"
+        title="${localize("Chat.LimitHelp")}"
+        aria-label="${localize("Chat.LimitAria")}"
       >
-        Limite
+        ${localize("Resources.Limit")}
       </button>
     `);
   }
@@ -137,7 +130,7 @@ export function renderPlayerActionButtons(resolution) {
   return `
     <section
       class="etc-actions etc-actions--player"
-      aria-label="Actions du joueur"
+      aria-label="${localize("Chat.PlayerActions")}"
       data-etc-player-actions
     >
       <div class="etc-actions__player">
@@ -153,7 +146,7 @@ export function renderGMValidationButton(resolution) {
   return `
     <section
       class="etc-actions etc-actions--gm"
-      aria-label="Validation du maître du jeu"
+      aria-label="${localize("Chat.GMValidation")}"
       data-etc-gm-actions
     >
       <div class="etc-actions__gm">
@@ -161,10 +154,10 @@ export function renderGMValidationButton(resolution) {
           type="button"
           class="etc-action etc-action--validate"
           data-etc-action="validate-resolution"
-          title="Valider le conflit avec ou sans jet du MJ et clôturer le jet en cours."
-          aria-label="Valider le conflit — Valider le conflit avec ou sans jet du MJ et clôturer le jet en cours."
+          title="${localize("Chat.ValidateHelp")}"
+          aria-label="${localize("Chat.ValidateAria")}"
         >
-          Valider le conflit
+          ${localize("Chat.ValidateConflict")}
         </button>
       </div>
     </section>
@@ -175,8 +168,8 @@ export function renderResolutionResult(resolution, analysis) {
   if (resolution.status !== "resolved") {
     const provisionalSuccess = analysis.success;
     const provisionalLabel = provisionalSuccess
-      ? "Réussite provisoire"
-      : "Échec provisoire";
+      ? localize("Chat.ProvisionalSuccess")
+      : localize("Chat.ProvisionalFailure");
     const provisionalClass = provisionalSuccess
       ? "etc-result--provisional-success"
       : "etc-result--provisional-failure";
@@ -187,7 +180,7 @@ export function renderResolutionResult(resolution, analysis) {
           <strong>${provisionalLabel}</strong>
         </div>
         <span class="etc-result__note">
-          Le résultat ne sera appliqué qu'après validation du MJ.
+          ${localize("Chat.PendingNote")}
         </span>
       </section>
     `;
@@ -195,13 +188,15 @@ export function renderResolutionResult(resolution, analysis) {
 
   if (!resolution.finalSuccess) {
     const failureMessage = resolution.characterDeparture
-      ? `${escapeHTML(resolution.playerName)} va nous quitter`
-      : "Le Bal des vérités commence";
+      ? format("Chat.CharacterWillLeave", {
+          name: escapeHTML(resolution.playerName)
+        })
+      : localize("Chat.BallBegins");
 
     return `
       <section class="etc-result etc-result--failure">
         <div class="etc-result__heading">
-          <strong>Échec définitif</strong>
+          <strong>${localize("Chat.FinalFailure")}</strong>
         </div>
         <span class="etc-result__main">${failureMessage}</span>
       </section>
@@ -210,13 +205,13 @@ export function renderResolutionResult(resolution, analysis) {
 
   const narratorLabel =
     resolution.narrator === "gm"
-      ? "Le MJ obtient la narration."
-      : "Le joueur obtient la narration.";
+      ? localize("Chat.GMNarrates")
+      : localize("Chat.PlayerNarrates");
 
   return `
     <section class="etc-result etc-result--success">
       <div class="etc-result__heading">
-        <strong>Réussite définitive</strong>
+        <strong>${localize("Chat.FinalSuccess")}</strong>
       </div>
       <span class="etc-result__main">${narratorLabel}</span>
     </section>
@@ -231,8 +226,8 @@ export function renderResolutionCard(resolution) {
       <span
         class="etc-status etc-status--waiting-gm"
         data-etc-status="waiting-gm"
-        title="Attente Jet MJ"
-        aria-label="Attente Jet MJ"
+        title="${localize("Chat.WaitingGMRoll")}"
+        aria-label="${localize("Chat.WaitingGMRoll")}"
       >
         <i class="fa-solid fa-dice" aria-hidden="true"></i>
       </span>
@@ -241,8 +236,8 @@ export function renderResolutionCard(resolution) {
       <span
         class="etc-status etc-status--pending-validation"
         data-etc-status="pending-validation"
-        title="Attente de validation"
-        aria-label="Attente de validation"
+        title="${localize("Chat.WaitingValidation")}"
+        aria-label="${localize("Chat.WaitingValidation")}"
       >
         <i class="fa-solid fa-hourglass-half" aria-hidden="true"></i>
       </span>
@@ -253,7 +248,7 @@ export function renderResolutionCard(resolution) {
         class="etc-status etc-status--cancelled"
         data-etc-status="cancelled"
       >
-        <span>Jet annulé</span>
+        <span>${localize("Chat.RollCancelled")}</span>
       </span>
     `
   }[resolution.status] ?? "";
@@ -264,7 +259,7 @@ export function renderResolutionCard(resolution) {
       ? `
         <section class="etc-pool etc-pool--gm">
           <div class="etc-pool__heading">
-            <strong>Maître du jeu</strong>
+            <strong>${localize("Chat.GMName")}</strong>
           </div>
           <div class="etc-dice-row">${renderDice(resolution.redResults, "red")}</div>
         </section>
@@ -273,15 +268,15 @@ export function renderResolutionCard(resolution) {
         ? `
           <section class="etc-pool etc-pool--gm">
             <div class="etc-pool__heading">
-              <strong>Maître du jeu</strong>
+              <strong>${localize("Chat.GMName")}</strong>
             </div>
-            <div class="etc-empty">Jet non effectué</div>
+            <div class="etc-empty">${localize("Chat.RollSkipped")}</div>
           </section>
         `
         : `
           <section class="etc-pool etc-pool--gm etc-pool--waiting">
             <div class="etc-pool__heading">
-              <strong>Maître du jeu</strong>
+              <strong>${localize("Chat.GMName")}</strong>
             </div>
 
             <div class="etc-gm-roll-reserved-space">
@@ -300,10 +295,10 @@ export function renderResolutionCard(resolution) {
                 class="etc-action etc-action--gm-roll"
                 data-etc-action="gm-roll"
                 data-etc-gm-roll-trigger
-                title="Facultatif : lancer le pool du MJ"
+                title="${localize("Chat.OptionalGMRoll")}"
               >
                 <i class="fa-solid fa-dice" aria-hidden="true"></i>
-                <span>Jet du MJ</span>
+                <span>${localize("Chat.GMRoll")}</span>
               </button>
             </div>
           </section>
@@ -326,7 +321,7 @@ export function renderResolutionCard(resolution) {
       data-etc-player-id="${escapeHTML(resolution.playerId)}"
     >
       <header class="etc-card__header">
-        <h3>Conflit</h3>
+        <h3>${localize("Chat.Conflict")}</h3>
         ${statusMarkup}
       </header>
 
@@ -362,8 +357,8 @@ export function renderBallOfTruthsCard(
 
   const completedContent = `
     <section class="etc-result etc-result--success etc-ball-transition__completed">
-      <strong>Nouvelle scène préparée</strong>
-      <span>Une bougie a été éteinte.</span>
+      <strong>${localize("Chat.NewSceneReady")}</strong>
+      <span>${localize("Chat.CandleExtinguished")}</span>
     </section>
   `;
 
@@ -384,7 +379,7 @@ export function renderBallOfTruthsCard(
             class="etc-action etc-action--validate etc-action--next-scene"
             data-etc-action="start-next-scene"
           >
-            Commencer le bal des vérités
+            ${localize("Chat.StartBall")}
           </button>
         </div>
       </div>
@@ -397,15 +392,16 @@ export function renderBallOfTruthsCard(
     >
       <header class="etc-card__header">
         <div>
-          <h3>Bal des vérités</h3>
-          <p>La résolution de ${escapeHTML(resolution.playerName)} est un échec.</p>
+          <h3>${localize("Common.BallOfTruths")}</h3>
+          <p>${format("Chat.BallFailure", {
+            name: escapeHTML(resolution.playerName)
+          })}</p>
         </div>
         <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
       </header>
 
       <p>
-        L'action s'achève. La partie entre dans l'interscène qui suit
-        l'extinction d'une bougie. Chacun va pouvoir partager ses vérités...
+        ${localize("Chat.BallBody")}
       </p>
 
       ${transitionContent}
@@ -422,13 +418,14 @@ export function renderCharacterDepartureCard(
   const normalizedIndex =
     Number.isInteger(messageIndex) &&
     messageIndex >= 0 &&
-    messageIndex < CHARACTER_DEPARTURE_MESSAGES.length
+    messageIndex < CHARACTER_DEPARTURE_MESSAGE_KEYS.length
       ? messageIndex
       : 0;
 
-  const atmosphereText =
-    CHARACTER_DEPARTURE_MESSAGES[normalizedIndex]
-      .replaceAll("[PERSONNAGE]", safeName);
+  const atmosphereText = format(
+    CHARACTER_DEPARTURE_MESSAGE_KEYS[normalizedIndex],
+    { name: safeName }
+  );
 
   return `
     <article
@@ -438,7 +435,7 @@ export function renderCharacterDepartureCard(
     >
       <header class="etc-character-departure__header">
         <h3 class="etc-character-departure__title">
-          ${safeName} va nous quitter
+          ${format("Chat.CharacterWillLeave", { name: safeName })}
         </h3>
       </header>
 
@@ -451,13 +448,15 @@ export function renderCharacterDepartureCard(
 
 export function renderDarknessProgressionCard(litCandles) {
   const candleCount = Number(litCandles);
-  const atmosphereText = DARKNESS_MESSAGES[candleCount];
+  const atmosphereKey = DARKNESS_MESSAGE_KEYS[candleCount];
 
-  if (!atmosphereText) return "";
+  if (!atmosphereKey) return "";
+
+  const atmosphereText = localize(atmosphereKey);
 
   const title = candleCount === 1
-    ? "1 bougie restante"
-    : `${candleCount} bougies restantes`;
+    ? localize("Chat.OneCandleRemaining")
+    : format("Chat.ManyCandlesRemaining", { count: candleCount });
 
   return `
     <article
@@ -495,7 +494,7 @@ export async function createDarknessProgressionMessage(litCandles) {
 
 export async function createCharacterDepartureMessage(resolution) {
   const messageIndex = Math.floor(
-    Math.random() * CHARACTER_DEPARTURE_MESSAGES.length
+    Math.random() * CHARACTER_DEPARTURE_MESSAGE_KEYS.length
   );
 
   return foundry.documents.ChatMessage.create({

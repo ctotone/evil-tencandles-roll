@@ -710,8 +710,8 @@
 .etc-floating-roll {
   position: fixed;
   z-index: 80;
-  left: 21%;
-  bottom: 1.25rem;
+  left: 49%;
+  bottom: 8.25rem;
   display: inline-flex;
   min-width: 14.5rem;
   min-height: 3.65rem;
@@ -723,12 +723,12 @@
   border: 1px solid rgba(215, 220, 230, 0.34);
   border-radius: 7px;
   background: rgba(12, 14, 20, 0.94);
-  color: #f2f3f5;
+  color: #f2f3f5a6;
   font-size: 1.3rem;
   font-weight: 700;
   line-height: 1;
   box-shadow:
-    0px 0px 19px 1px rgb(95 95 95 / 72%),
+    0px 0px 19px 1px rgb(95 95 95 / 39%),
     inset 0 1px 0 rgb(255 255 255 / 12%),
     inset 0 -1px 0 rgb(0 0 0 / 40%);
   transition:

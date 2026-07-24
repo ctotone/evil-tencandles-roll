@@ -8,6 +8,10 @@ export function localize(key) {
   return game.i18n.localize(`${I18N_PREFIX}.${key}`);
 }
 
+export function format(key, data = {}) {
+  return game.i18n.format(`${I18N_PREFIX}.${key}`, data);
+}
+
 export function clone(data) {
   return foundry.utils.deepClone(data);
 }
@@ -62,13 +66,13 @@ export function uuidsToTextarea(uuids) {
 export function readDialogForm(button) {
   const form = button?.form;
   if (!(form instanceof HTMLFormElement)) {
-    throw new Error(`${MODULE_ID} | Formulaire DialogV2 introuvable.`);
+    throw new Error(localize("Errors.DialogFormMissing"));
   }
 
   const getElement = (name) => {
     const element = form.elements.namedItem(name);
     if (!element) {
-      throw new Error(`${MODULE_ID} | Champ de formulaire introuvable : ${name}`);
+      throw new Error(format("Errors.DialogFieldMissing", { name }));
     }
     return element;
   };

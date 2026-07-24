@@ -3,7 +3,7 @@
  */
 
 import { MODULE_ID, SOCKET_NAME, TOTAL_CANDLES } from "./constants.js";
-import { clampInteger } from "./utils.js";
+import { clampInteger, localize } from "./utils.js";
 
 function getActiveDieResults(die) {
   return (die?.results ?? [])
@@ -47,7 +47,7 @@ function deserializeRoll(serializedRoll) {
   }
 
   throw new Error(
-    "La classe Roll active ne permet pas de reconstruire un jet sérialisé."
+    localize("Errors.RollDeserialize")
   );
 }
 
@@ -73,7 +73,7 @@ async function showRollIn3DLocal(
     if (notify && !warnedDice3DUnavailable) {
       warnedDice3DUnavailable = true;
       ui.notifications.warn(
-        "Les dés 3D nécessitent que le module Dice So Nice soit installé et activé."
+        localize("Dice3D.Required")
       );
       console.warn(
         `${MODULE_ID} | Dice So Nice est absent ou son API n'est pas disponible.`
@@ -89,7 +89,7 @@ async function showRollIn3DLocal(
     if (notify && !warnedDice3DDisabled) {
       warnedDice3DDisabled = true;
       ui.notifications.warn(
-        "Dice So Nice est actif, mais l'affichage des dés 3D est désactivé dans ses réglages."
+        localize("Dice3D.Disabled")
       );
       console.warn(
         `${MODULE_ID} | Dice So Nice est actif mais désactivé pour ce client.`
@@ -116,7 +116,7 @@ async function showRollIn3DLocal(
     ) {
       warnedDice3DRejected = true;
       ui.notifications.warn(
-        "Dice So Nice a refusé l'animation du jet. Vérifie ses réglages de visibilité et de combat."
+        localize("Dice3D.Rejected")
       );
       console.warn(
         `${MODULE_ID} | Dice So Nice a retourné false pour l'animation.`,
@@ -133,7 +133,7 @@ async function showRollIn3DLocal(
 
     if (notify) {
       ui.notifications.warn(
-        "L'animation 3D a échoué, mais le résultat du conflit reste valide."
+        localize("Dice3D.Failed")
       );
     }
 

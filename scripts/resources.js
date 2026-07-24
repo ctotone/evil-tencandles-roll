@@ -3,7 +3,7 @@
  */
 
 import { ACTOR_RESOURCE_FLAGS, MODULE_ID } from "./constants.js";
-import { escapeHTML, readDialogForm } from "./utils.js";
+import { escapeHTML, format, localize, readDialogForm } from "./utils.js";
 
 export function actorHasItemType(actor, itemType) {
   return actor.items.some((item) => item.type === itemType);
@@ -95,7 +95,7 @@ export async function resetActorResources(actor, { notify = true } = {}) {
 
   if (notify) {
     ui.notifications.info(
-      `Ressources Ten Candles réinitialisées pour ${actor.name}.`
+      format("Resources.ResetSuccess", { name: actor.name })
     );
   }
 
@@ -132,7 +132,7 @@ function getResourceDisplayState({
 
 export async function openSelectedActorResourceStatus() {
   if (!game.user.isGM) {
-    ui.notifications.warn("Cette action est réservée au MJ.");
+    ui.notifications.warn(localize("Notifications.GMOnly"));
     return false;
   }
 
@@ -144,37 +144,37 @@ export async function openSelectedActorResourceStatus() {
   const virtue = getResourceDisplayState({
     present: resources.hasVirtue,
     used: resources.virtueUsed,
-    availableLabel: "Disponible",
-    usedLabel: "Utilisée",
-    absentLabel: "Absente"
+    availableLabel: localize("Resources.VirtueAvailable"),
+    usedLabel: localize("Resources.VirtueUsed"),
+    absentLabel: localize("Resources.VirtueAbsent")
   });
 
   const vice = getResourceDisplayState({
     present: resources.hasVice,
     used: resources.viceUsed,
-    availableLabel: "Disponible",
-    usedLabel: "Utilisé",
-    absentLabel: "Absent"
+    availableLabel: localize("Resources.ViceAvailable"),
+    usedLabel: localize("Resources.ViceUsed"),
+    absentLabel: localize("Resources.ViceAbsent")
   });
 
   const limit = !resources.hasLimit
     ? {
-        label: "Absente",
+        label: localize("Resources.LimitAbsent"),
         cssClass: "etc-resource-status--absent"
       }
     : resources.canUseLimit
       ? {
-          label: "Débloquée",
+          label: localize("Resources.LimitUnlocked"),
           cssClass: "etc-resource-status--available"
         }
       : {
-          label: "Verrouillée",
+          label: localize("Resources.LimitLocked"),
           cssClass: "etc-resource-status--locked"
         };
 
   await foundry.applications.api.DialogV2.input({
     window: {
-      title: `Ten Candles — Ressources de ${actor.name}`
+      title: format("Resources.StatusTitle", { name: actor.name })
     },
     content: `
       <div class="etc-dialog etc-resource-control">
@@ -183,21 +183,21 @@ export async function openSelectedActorResourceStatus() {
         </p>
 
         <div class="etc-resource-control__row">
-          <strong>Vertu</strong>
+          <strong>${localize("Resources.Virtue")}</strong>
           <span class="etc-resource-status ${virtue.cssClass}">
             ${virtue.label}
           </span>
         </div>
 
         <div class="etc-resource-control__row">
-          <strong>Vice</strong>
+          <strong>${localize("Resources.Vice")}</strong>
           <span class="etc-resource-status ${vice.cssClass}">
             ${vice.label}
           </span>
         </div>
 
         <div class="etc-resource-control__row">
-          <strong>Limite</strong>
+          <strong>${localize("Resources.Limit")}</strong>
           <span class="etc-resource-status ${limit.cssClass}">
             ${limit.label}
           </span>
@@ -205,7 +205,7 @@ export async function openSelectedActorResourceStatus() {
       </div>
     `,
     ok: {
-      label: "Fermer",
+      label: localize("Common.Close"),
       callback: () => true
     },
     rejectClose: false,
@@ -239,7 +239,7 @@ export async function chooseCharacterActorForRoll() {
 
   if (controlledActors.length > 1) {
     ui.notifications.warn(
-      "Sélectionne un seul token de personnage avant de lancer le pool joueur."
+      localize("Resources.SelectOneToken")
     );
     return null;
   }
@@ -254,7 +254,7 @@ export async function chooseCharacterActorForRoll() {
 
   if (candidates.length === 0) {
     ui.notifications.warn(
-      "Aucun personnage Ten Candles utilisable n'a été trouvé."
+      localize("Resources.NoCharacter")
     );
     return null;
   }
@@ -264,7 +264,7 @@ export async function chooseCharacterActorForRoll() {
   }
 
   const options = candidates
-    .sort((a, b) => a.name.localeCompare(b.name, "fr"))
+    .sort((a, b) => a.name.localeCompare(b.name, game.i18n.lang))
     .map(
       (actor) =>
         `<option value="${escapeHTML(actor.uuid)}">${escapeHTML(actor.name)}</option>`
@@ -273,12 +273,12 @@ export async function chooseCharacterActorForRoll() {
 
   const result = await foundry.applications.api.DialogV2.input({
     window: {
-      title: "Ten Candles — Choisir le personnage"
+      title: localize("Resources.ChooseTitle")
     },
     content: `
       <div class="etc-dialog">
         <label>
-          <span>Personnage concerné par le lancer</span>
+          <span>${localize("Resources.CharacterForRoll")}</span>
           <select name="actorUuid">
             ${options}
           </select>
@@ -286,7 +286,7 @@ export async function chooseCharacterActorForRoll() {
       </div>
     `,
     ok: {
-      label: "Choisir",
+      label: localize("Common.Choose"),
       callback: (_event, button) => {
         const fields = readDialogForm(button);
         return {

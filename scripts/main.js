@@ -17,7 +17,7 @@ import {
   isActiveGM,
   saveState
 } from "./state.js";
-import { clone } from "./utils.js";
+import { clone, localize } from "./utils.js";
 import {
   chooseCharacterActorForRoll,
   getActorResourceState,
@@ -86,7 +86,7 @@ Hooks.once("ready", async () => {
 
     resetSelectedActorResources: async () => {
       if (!game.user.isGM) {
-        ui.notifications.warn("Cette action est réservée au MJ.");
+        ui.notifications.warn(localize("Notifications.GMOnly"));
         return false;
       }
 
@@ -98,7 +98,7 @@ Hooks.once("ready", async () => {
 
     resetState: async () => {
       if (!game.user.isGM) {
-        ui.notifications.warn("Cette action est réservée au MJ.");
+        ui.notifications.warn(localize("Notifications.GMOnly"));
         return;
       }
 
@@ -111,7 +111,7 @@ Hooks.once("ready", async () => {
       await saveState(resetState);
       await syncCanvasSafely(resetState);
 
-      ui.notifications.info("L'état Ten Candles a été réinitialisé.");
+      ui.notifications.info(localize("Notifications.StateReset"));
     }
   };
 
@@ -138,7 +138,7 @@ Hooks.on("preCreateActor", (actor, data) => {
 
   if (!existingTypes.has("virtue")) {
     items.push({
-      name: "Vertu",
+      name: localize("Items.Virtue"),
       type: "virtue",
       system: {
         description: ""
@@ -148,7 +148,7 @@ Hooks.on("preCreateActor", (actor, data) => {
 
   if (!existingTypes.has("vice")) {
     items.push({
-      name: "Vice",
+      name: localize("Items.Vice"),
       type: "vice",
       system: {
         description: ""

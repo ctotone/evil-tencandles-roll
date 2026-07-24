@@ -7,7 +7,7 @@ import {
   SUPPORTED_VISUAL_DOCUMENTS,
   TOTAL_CANDLES
 } from "./constants.js";
-import { extractUuid } from "./utils.js";
+import { extractUuid, format, localize } from "./utils.js";
 import { getState, normalizeState } from "./state.js";
 
 export function parseSceneEmbeddedUuid(value) {
@@ -190,7 +190,7 @@ export async function syncCanvasFromState(
   { notify = true } = {}
 ) {
   if (!game.user.isGM) {
-    if (notify) ui.notifications.warn("La synchronisation du canevas est réservée au MJ.");
+    if (notify) ui.notifications.warn(localize("Notifications.GMOnly"));
     return null;
   }
 
@@ -200,7 +200,7 @@ export async function syncCanvasFromState(
   if (!config.enabled) {
     if (notify) {
       ui.notifications.warn(
-        "La synchronisation du canevas n'est pas activée dans la configuration."
+        localize("Canvas.Disabled")
       );
     }
     return null;
@@ -260,20 +260,27 @@ export async function syncCanvasFromState(
 
   if (notify) {
     const summary = [
-      `${report.found}/${report.configured} objet(s) trouvé(s)`,
-      `${report.updated} modifié(s)`,
-      `${report.unchanged} déjà correct(s)`
+      format("Canvas.Found", {
+        found: report.found,
+        configured: report.configured
+      }),
+      format("Canvas.Updated", {
+        count: report.updated
+      }),
+      format("Canvas.Unchanged", {
+        count: report.unchanged
+      })
     ].join(" — ");
 
     if (report.errors.length) {
-      ui.notifications.error(`Synchronisation partielle : ${summary}.`);
+      ui.notifications.error(format("Canvas.Partial", { summary }));
     } else {
-      ui.notifications.info(`Canevas synchronisé : ${summary}.`);
+      ui.notifications.info(format("Canvas.Success", { summary }));
     }
 
     if (report.missing.length || report.invalid.length) {
       ui.notifications.warn(
-        "Certains UUID n'ont pas pu être utilisés. Consulte la console F12."
+        localize("Canvas.InvalidUuids")
       );
     }
   }
@@ -289,7 +296,7 @@ export async function syncCanvasSafely(state, { notify = false } = {}) {
 
     if (notify) {
       ui.notifications.error(
-        "La synchronisation du canevas a rencontré une erreur."
+        localize("Canvas.Error")
       );
     }
 
