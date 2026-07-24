@@ -36,5 +36,18 @@
   "manifest": "https://raw.githubusercontent.com/ctotone/evil-tencandles-roll/refs/heads/main/module.json",
   "download": "https://github.com/ctotone/evil-tencandles-roll/releases/latest/download/evil-tencandles-roll.zip",
   "readme": "README.md",
-  "bugs": "https://github.com/ctotone/evil-tencandles-roll/issues"
+  "bugs": "https://github.com/ctotone/evil-tencandles-roll/issues",
+  "packs": [
+    {
+      "name": "le-monde-est-sombre",
+      "label": "Le monde est sombre...",
+      "path": "packs/le-monde-est-sombre",
+      "type": "Scene",
+      "ownership": {
+        "PLAYER": "NONE",
+        "TRUSTED": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ]
 }

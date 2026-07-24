@@ -5,6 +5,9 @@
 import { MODULE_ID } from "./constants.js";
 import { getState } from "./state.js";
 import { syncCanvasSafely } from "./canvas-sync.js";
+import {
+  installOfficialScene
+} from "./scene-installer.js";
 import { openCanvasSetup, openGMSetup } from "./dialogs.js";
 import { requestAction, requestPlayerRoll } from "./socket.js";
 import {
@@ -14,7 +17,24 @@ import {
 } from "./resources.js";
 
 const FLOATING_ROLL_BUTTON_ID = `${MODULE_ID}-floating-roll`;
+const OFFICIAL_SCENE_INSTALL_TOOL = "evil-tencandles-scene-install";
+
 let floatingRollBusy = false;
+
+function triggerOfficialSceneInstall(
+  event,
+  active = true
+) {
+  event?.preventDefault?.();
+
+  if (active === false) return;
+
+  console.info(
+    `${MODULE_ID} | Clic sur le bouton d’installation de scène.`
+  );
+
+  void installOfficialScene();
+}
 
 export function activateChatMessageActions(message, html) {
   const resolutionId = message.getFlag(MODULE_ID, "resolutionId");
@@ -246,6 +266,19 @@ export function registerSceneControlButtons(controls) {
     icon: "fa-solid fa-fire-flame-curved",
     order: getTenCandlesControlOrder(controls),
     visible: true,
+
+    onToolChange: (event, tool, active) => {
+      if (
+        tool?.name
+        === OFFICIAL_SCENE_INSTALL_TOOL
+      ) {
+        triggerOfficialSceneInstall(
+          event,
+          active
+        );
+      }
+    },
+
     tools: {
       "evil-tencandles-gm-roll": {
         name: "evil-tencandles-gm-roll",
@@ -277,11 +310,26 @@ export function registerSceneControlButtons(controls) {
         onChange: () => resetSelectedActorResourcesFromControl()
       },
 
+      "evil-tencandles-scene-install": {
+        name: OFFICIAL_SCENE_INSTALL_TOOL,
+        title: "Ten Candles : installer la scène « Le monde est sombre... »",
+        icon: "fa-solid fa-map-location-dot",
+        order: 3,
+        button: true,
+        visible: true,
+
+        // V14 documente onChange pour les SceneControlTool.
+        onChange: triggerOfficialSceneInstall,
+
+        // Le core accepte également onClick pour les boutons immédiats.
+        onClick: triggerOfficialSceneInstall
+      },
+
       "evil-tencandles-canvas-config": {
         name: "evil-tencandles-canvas-config",
         title: "Ten Candles : configurer le canevas",
         icon: "fa-solid fa-link",
-        order: 3,
+        order: 4,
         button: true,
         visible: true,
         onChange: () => openCanvasSetup()
@@ -291,7 +339,7 @@ export function registerSceneControlButtons(controls) {
         name: "evil-tencandles-canvas-sync",
         title: "Ten Candles : synchroniser le canevas",
         icon: "fa-solid fa-arrows-rotate",
-        order: 4,
+        order: 5,
         button: true,
         visible: true,
         onChange: () => syncCanvasSafely(getState(), { notify: true })
@@ -301,7 +349,7 @@ export function registerSceneControlButtons(controls) {
         name: "evil-tencandles-dev-settings",
         title: "Ten Candles : réglages de développement",
         icon: "fa-solid fa-gear",
-        order: 5,
+        order: 6,
         button: true,
         visible: true,
         onChange: () => openGMSetup()

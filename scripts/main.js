@@ -24,6 +24,15 @@ import {
   resetActorResources
 } from "./resources.js";
 import { syncCanvasSafely } from "./canvas-sync.js";
+import {
+  getSceneInstallerDiagnostics,
+  handleOfficialSceneCreated,
+  installOfficialScene,
+  repairOfficialSceneConfigurationOnReady,
+  repairOfficialSceneInstallation,
+  SCENE_INSTALLER_BUILD
+} from "./scene-installer.js";
+import { registerModuleFonts } from "./fonts.js";
 import { cancelActiveResolution } from "./resolution.js";
 import { openCanvasSetup, openGMSetup } from "./dialogs.js";
 import { onSocketMessage, requestAction, requestPlayerRoll } from "./socket.js";
@@ -35,6 +44,8 @@ import {
 } from "./controls.js";
 
 Hooks.once("init", () => {
+  registerModuleFonts();
+
   game.settings.register(MODULE_ID, STATE_KEY, {
     name: `${I18N_PREFIX}.Settings.StateName`,
     hint: `${I18N_PREFIX}.Settings.StateHint`,
@@ -47,13 +58,17 @@ Hooks.once("init", () => {
   console.log(`${MODULE_ID} | Initialisation.`);
 });
 
-Hooks.once("ready", () => {
+Hooks.once("ready", async () => {
   game.socket.on(SOCKET_NAME, onSocketMessage);
 
   game.evilTenCandlesRoll = {
     getState,
     openGMSetup,
     openCanvasSetup,
+    installOfficialScene,
+    repairOfficialSceneInstallation,
+    getSceneInstallerDiagnostics,
+    sceneInstallerBuild: SCENE_INSTALLER_BUILD,
     syncCanvas: () => syncCanvasSafely(getState(), { notify: true }),
     diagnoseCanvas: () => syncCanvasSafely(getState(), { notify: true }),
     requestPlayerRoll,
@@ -102,7 +117,11 @@ Hooks.once("ready", () => {
 
   mountFloatingPlayerRollButton();
 
-  console.log(`${MODULE_ID} | Prêt.`);
+  await repairOfficialSceneConfigurationOnReady();
+
+  console.log(
+    `${MODULE_ID} | Prêt — ${SCENE_INSTALLER_BUILD}.`
+  );
 });
 
 Hooks.on("preCreateActor", (actor, data) => {
@@ -141,6 +160,7 @@ Hooks.on("preCreateActor", (actor, data) => {
 });
 
 Hooks.on("getSceneControlButtons", registerSceneControlButtons);
+Hooks.on("createScene", handleOfficialSceneCreated);
 Hooks.on("renderChatMessageHTML", activateChatMessageActions);
 
 Hooks.on("updateSetting", (setting) => {

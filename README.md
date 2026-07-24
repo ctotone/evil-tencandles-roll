@@ -17,6 +17,8 @@ scripts/
 ├── resolution.js     # Cycle complet d’un conflit
 ├── chat.js           # Cartes et messages du chat
 ├── canvas-sync.js    # Bougies, lumières et dés du canevas
+├── scene-installer.js    # Import et configuration de la scène officielle
+├── fonts.js          # Enregistrement des polices auprès de Foundry
 ├── dialogs.js        # Fenêtres de configuration
 ├── socket.js         # Communication joueur → MJ
 ├── notifications.js  # Notifications entre utilisateurs
@@ -38,6 +40,7 @@ scripts/
 game.evilTenCandlesRoll.requestPlayerRoll()
 game.evilTenCandlesRoll.requestGMRoll()
 game.evilTenCandlesRoll.openCanvasSetup()
+game.evilTenCandlesRoll.installOfficialScene()
 game.evilTenCandlesRoll.syncCanvas()
 game.evilTenCandlesRoll.openGMSetup()
 game.evilTenCandlesRoll.getSelectedActorResources()
@@ -54,3 +57,33 @@ Foundry Data/Data/modules/
 ```
 
 Puis activer **Evilbram Ten Candles Roll** dans un monde utilisant le système `tencandles`.
+
+
+## Scène officielle
+
+Le module déclare le compendium de scènes :
+
+```text
+evil-tencandles-roll.le-monde-est-sombre
+```
+
+Le bouton **Installer la scène « Le monde est sombre... »** :
+
+- réutilise la scène officielle si elle existe déjà dans le monde ;
+- sinon, l’importe depuis le compendium ;
+- l’ajoute à la navigation ;
+- l’active et l’affiche pour le MJ, puis y conduit les utilisateurs ;
+- configure automatiquement les flammes, lumières et dés en utilisant exclusivement l’ID de la scène importée ;
+- initialise la partie avec dix bougies et dix dés bleus.
+
+
+### Réparation de la scène officielle
+
+Si une scène officielle est déjà présente mais que le monde conserve une ancienne
+configuration de canevas, le module répare automatiquement les UUID au démarrage.
+
+Commande manuelle disponible :
+
+```js
+game.evilTenCandlesRoll.repairOfficialSceneInstallation()
+```
