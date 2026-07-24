@@ -6,6 +6,32 @@ import { MODULE_ID } from "./constants.js";
 import { countValue, getResolutionAnalysis } from "./dice.js";
 import { escapeHTML } from "./utils.js";
 
+const DARKNESS_MESSAGES = Object.freeze({
+  9: "Une flamme s’éteint. L’obscurité gagne en présence, encore contenue, mais déjà assez proche pour peser sur chaque souffle.",
+  8: "La lumière recule. Les ombres s’épaississent, se resserrent, et leur silence semble attendre la moindre faiblesse.",
+  7: "L’obscurité s’étend davantage. Chaque flamme paraît plus fragile, comme si les ténèbres apprenaient à les étouffer.",
+  6: "La lumière devient rare. Les ombres avalent les contours et laissent derrière elles une inquiétude sourde, presque tangible.",
+  5: "La moitié des flammes a disparu. L’obscurité n’entoure plus seulement le groupe : elle semble désormais l’observer.",
+  4: "Les ténèbres prennent toute la place. Chaque lumière vacille sous leur poids, et le moindre souffle paraît menaçant.",
+  3: "Il ne reste presque plus rien pour repousser l’obscurité. Les ombres se pressent, épaisses, proches, impossibles à ignorer.",
+  2: "Deux flammes seulement résistent encore. L’obscurité se fait totale, lourde, silencieuse, prête à tout engloutir.",
+  1: "Une seule flamme demeure. Le Dernier combat commence, tandis que l’obscurité attend, immense, immobile et sans pitié."
+});
+
+
+const CHARACTER_DEPARTURE_MESSAGES = Object.freeze([
+  "[PERSONNAGE] atteint le bout de son chemin. Sa lumière s’éloigne doucement, laissant aux autres la force de poursuivre sans lui.",
+  "[PERSONNAGE] quitte le cercle des flammes. Son passage demeure pourtant, comme une empreinte discrète que l’obscurité ne peut effacer.",
+  "Pour [PERSONNAGE], le voyage s’arrête ici. Son histoire se referme sans bruit, mais ses traces continueront d’accompagner les autres.",
+  "[PERSONNAGE] laisse sa place au silence. Ce qu’il a porté reste suspendu dans l’air, prêt à guider ceux qui poursuivent encore.",
+  "La route de [PERSONNAGE] s’incline ailleurs. Il disparaît du récit, mais l’écho de ses choix demeure au cœur de ceux qui restent.",
+  "[PERSONNAGE] franchit un seuil que les autres ne peuvent suivre. Sa lumière se retire, sans que son souvenir cesse de les accompagner.",
+  "Le chapitre de [PERSONNAGE] s’achève. La page se tourne avec douceur, tandis que ce qu’il a semé continue de vivre dans le récit.",
+  "[PERSONNAGE] s’éloigne du cercle, porté vers un horizon invisible. Derrière lui demeure une lueur que l’obscurité ne peut reprendre.",
+  "Le chemin se sépare pour [PERSONNAGE]. Sa présence s’efface, mais quelque chose de lui reste auprès de ceux qui avancent encore.",
+  "[PERSONNAGE] atteint la dernière ligne de son histoire. Le rideau tombe sans fracas, laissant derrière lui une lumière douce et tenace."
+]);
+
 export function renderDice(results, color) {
   if (!results?.length) {
     return '<span class="etc-empty">Aucun dé</span>';
@@ -154,17 +180,10 @@ export function renderResolutionResult(resolution, analysis) {
     const provisionalClass = provisionalSuccess
       ? "etc-result--provisional-success"
       : "etc-result--provisional-failure";
-    const provisionalIcon = provisionalSuccess
-      ? "fa-circle-check"
-      : "fa-triangle-exclamation";
 
     return `
       <section class="etc-result ${provisionalClass}">
         <div class="etc-result__heading">
-          <i
-            class="fa-solid ${provisionalIcon} etc-result__icon"
-            aria-hidden="true"
-          ></i>
           <strong>${provisionalLabel}</strong>
         </div>
         <span class="etc-result__note">
@@ -176,18 +195,12 @@ export function renderResolutionResult(resolution, analysis) {
 
   if (!resolution.finalSuccess) {
     const failureMessage = resolution.characterDeparture
-      ? `${escapeHTML(resolution.playerName)} va nous quitter.`
-      : "Le Bal des vérités commence.";
+      ? `${escapeHTML(resolution.playerName)} va nous quitter`
+      : "Le Bal des vérités commence";
 
     return `
       <section class="etc-result etc-result--failure">
         <div class="etc-result__heading">
-          <span
-            class="etc-result__icon etc-result__icon--extinguished"
-            aria-hidden="true"
-          >
-            <i class="fa-solid fa-fire-flame-curved"></i>
-          </span>
           <strong>Échec définitif</strong>
         </div>
         <span class="etc-result__main">${failureMessage}</span>
@@ -203,10 +216,6 @@ export function renderResolutionResult(resolution, analysis) {
   return `
     <section class="etc-result etc-result--success">
       <div class="etc-result__heading">
-        <i
-          class="fa-solid fa-check etc-result__icon"
-          aria-hidden="true"
-        ></i>
         <strong>Réussite définitive</strong>
       </div>
       <span class="etc-result__main">${narratorLabel}</span>
@@ -266,7 +275,7 @@ export function renderResolutionCard(resolution) {
             <div class="etc-pool__heading">
               <strong>Maître du jeu</strong>
             </div>
-            <div class="etc-empty">Jet MJ non effectué</div>
+            <div class="etc-empty">Jet non effectué</div>
           </section>
         `
         : `
@@ -355,7 +364,6 @@ export function renderBallOfTruthsCard(
     <section class="etc-result etc-result--success etc-ball-transition__completed">
       <strong>Nouvelle scène préparée</strong>
       <span>Une bougie a été éteinte.</span>
-      <span>Il en reste maintenant ${nextLitCandles}.</span>
     </section>
   `;
 
@@ -376,7 +384,7 @@ export function renderBallOfTruthsCard(
             class="etc-action etc-action--validate etc-action--next-scene"
             data-etc-action="start-next-scene"
           >
-            Démarrer la scène suivante
+            Commencer le bal des vérités
           </button>
         </div>
       </div>
@@ -406,32 +414,101 @@ export function renderBallOfTruthsCard(
 }
 
 
-export function renderCharacterDepartureCard(resolution) {
+export function renderCharacterDepartureCard(
+  resolution,
+  messageIndex = 0
+) {
+  const safeName = escapeHTML(resolution.playerName);
+  const normalizedIndex =
+    Number.isInteger(messageIndex) &&
+    messageIndex >= 0 &&
+    messageIndex < CHARACTER_DEPARTURE_MESSAGES.length
+      ? messageIndex
+      : 0;
+
+  const atmosphereText =
+    CHARACTER_DEPARTURE_MESSAGES[normalizedIndex]
+      .replaceAll("[PERSONNAGE]", safeName);
+
   return `
     <article
       class="etc-card etc-character-departure"
       data-etc-resolution-id="${escapeHTML(resolution.id)}"
+      data-etc-departure-message-index="${normalizedIndex}"
     >
-      <section class="etc-result etc-result--failure">
-        <strong class="etc-character-departure__message">
-          ${escapeHTML(resolution.playerName)} va nous quitter
-        </strong>
-      </section>
+      <header class="etc-character-departure__header">
+        <h3 class="etc-character-departure__title">
+          ${safeName} va nous quitter
+        </h3>
+      </header>
+
+      <p class="etc-character-departure__text">
+        ${atmosphereText}
+      </p>
     </article>
   `;
 }
 
-export async function createCharacterDepartureMessage(resolution) {
+export function renderDarknessProgressionCard(litCandles) {
+  const candleCount = Number(litCandles);
+  const atmosphereText = DARKNESS_MESSAGES[candleCount];
+
+  if (!atmosphereText) return "";
+
+  const title = candleCount === 1
+    ? "1 bougie restante"
+    : `${candleCount} bougies restantes`;
+
+  return `
+    <article
+      class="etc-card etc-darkness-card"
+      data-etc-lit-candles="${candleCount}"
+    >
+      <header class="etc-darkness-card__header">
+        <h3 class="etc-darkness-card__title">${title}</h3>
+      </header>
+
+      <p class="etc-darkness-card__text">
+        ${escapeHTML(atmosphereText)}
+      </p>
+    </article>
+  `;
+}
+
+export async function createDarknessProgressionMessage(litCandles) {
+  const content = renderDarknessProgressionCard(litCandles);
+  if (!content) return null;
+
   return foundry.documents.ChatMessage.create({
     speaker: {
       alias: "Ten Candles"
     },
-    content: renderCharacterDepartureCard(resolution),
+    content,
+    flags: {
+      [MODULE_ID]: {
+        type: "darkness-progression",
+        litCandles
+      }
+    }
+  });
+}
+
+export async function createCharacterDepartureMessage(resolution) {
+  const messageIndex = Math.floor(
+    Math.random() * CHARACTER_DEPARTURE_MESSAGES.length
+  );
+
+  return foundry.documents.ChatMessage.create({
+    speaker: {
+      alias: "Ten Candles"
+    },
+    content: renderCharacterDepartureCard(resolution, messageIndex),
     flags: {
       [MODULE_ID]: {
         type: "character-departure",
         resolutionId: resolution.id,
-        actorUuid: resolution.actorUuid
+        actorUuid: resolution.actorUuid,
+        messageIndex
       }
     }
   });

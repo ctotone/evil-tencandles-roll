@@ -19,6 +19,7 @@ import {
 import {
   createBallOfTruthsMessage,
   createCharacterDepartureMessage,
+  createDarknessProgressionMessage,
   createResolutionMessage,
   renderBallOfTruthsCard,
   updateResolutionMessage
@@ -503,6 +504,8 @@ export async function handleStartNextScene(requesterId, payload = {}) {
       })
     });
   }
+
+  await createDarknessProgressionMessage(state.litCandles);
 
   notifyRequester(
     requesterId,

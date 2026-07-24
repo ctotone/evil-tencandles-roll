@@ -1,4 +1,12 @@
 @font-face {
+  font-family: "courier-prime";
+  src: url("/modules/evil-tencandles-roll/fonts/courier-prime.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "3rd";
   src: url("../fonts/3rd Man.woff2") format("woff2");
   font-style: normal;
@@ -12,6 +20,60 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
+}
+
+/* Police générale du module : Courier Prime. Le ciblage explicite évite que les règles
+   typographiques de Foundry remplacent la police héritée. */
+.chat-message .etc-card,
+.chat-message .etc-card p,
+.chat-message .etc-card span,
+.chat-message .etc-card strong,
+.chat-message .etc-card button,
+.etc-dialog,
+.etc-dialog p,
+.etc-dialog span,
+.etc-dialog strong,
+.etc-dialog label,
+.etc-dialog input,
+.etc-dialog select,
+.etc-dialog textarea,
+.etc-dialog button,
+.etc-floating-roll,
+.etc-floating-roll span {
+  font-family: "courier-prime", monospace !important;
+}
+
+/* Les éléments déjà prévus en 3rd conservent explicitement cette police. */
+.chat-message .etc-conflict-card > .etc-card__header h3,
+.chat-message .etc-darkness-card__title,
+.chat-message .etc-character-departure__title {
+  font-family: "3rd", serif !important;
+}
+
+.chat-message .etc-darkness-card,
+.chat-message .etc-character-departure {
+  gap: 0.55rem;
+}
+
+.chat-message .etc-darkness-card__header,
+.chat-message .etc-character-departure__header {
+  display: block;
+}
+
+.chat-message .etc-darkness-card__title,
+.chat-message .etc-character-departure__title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.chat-message .etc-darkness-card__text,
+.chat-message .etc-character-departure__text {
+  margin: 0;
+  font-family: "courier-prime", monospace !important;
+  line-height: 1.4;
 }
 
 .chat-message .etc-card {
@@ -35,7 +97,6 @@
 .chat-message .etc-conflict-card > .etc-card__header h3 {
   grid-column: 1 / 3;
   justify-self: center;
-  font-family: "3rd", serif;
   font-weight: 400;
   font-size: 3rem;
   white-space: nowrap;
@@ -150,11 +211,23 @@
   padding: 0.65rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.045);
   box-shadow:
     0 0.3rem 0.7rem rgb(0 0 0),
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 -1px 0 rgb(0 0 0 / 27%);
+}
+
+.etc-pool--player {
+  background: #003957a1;
+}
+
+.etc-pool--gm {
+  background: #6b190094;
+}
+
+.etc-pool--gm .etc-empty {
+  width: 100%;
+  text-align: center;
 }
 
 .etc-player-row {
@@ -246,15 +319,15 @@
   width: 1.65rem;
   height: 1.65rem;
   place-items: center;
-  border: 2px solid rgba(15, 17, 20, 0.72);
+  border: 2px solid rgb(15 17 20);
   border-radius: 5px;
-  color: #0b0c0e;
+  color: #0b0c0ef2;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1;
   text-shadow: none;
-  box-shadow: none;
+  box-shadow: 0px 0px 13px 2px rgb(0 0 0 / 57%);
 }
 
 .chat-message .etc-card .etc-die--neutral {
@@ -288,33 +361,20 @@
 
 .etc-result__heading {
   display: flex;
+  width: 100%;
   align-items: center;
-  gap: 0.45rem;
+  justify-content: center;
+  gap: 0;
+  text-align: center;
 }
 
 .etc-result__heading strong {
+  width: 100%;
   font-size: 0.95rem;
+  text-align: center;
 }
 
-.etc-result__icon {
-  position: relative;
-  display: inline-flex;
-  flex: 0 0 1.1rem;
-  width: 1.1rem;
-  min-height: 1.1rem;
-  align-items: center;
-  justify-content: center;
-}
 
-.etc-result__icon--extinguished::after {
-  content: "";
-  position: absolute;
-  width: 1.25rem;
-  height: 2px;
-  border-radius: 999px;
-  background: currentColor;
-  transform: rotate(-45deg);
-}
 
 .chat-message .etc-card .etc-result .etc-result__main {
   color: inherit;
@@ -344,7 +404,7 @@
 .etc-result--success {
   border-color: rgba(80, 205, 120, 0.9);
   background: rgba(35, 105, 60, 0.38);
-  color: #d7f5e0;
+  color: #ffffffc4;
   text-align: center;
 }
 
@@ -361,6 +421,12 @@
   border-color: rgba(175, 65, 75, 0.9);
   background: rgba(85, 20, 30, 0.52);
   color: #f0bec4;
+}
+
+.etc-result--failure .etc-result__main {
+  display: block;
+  width: 100%;
+  text-align: center;
 }
 
 .etc-actions {
@@ -779,9 +845,4 @@
 }
 
 
-.etc-character-departure__message {
-  width: 100%;
-  font-size: 1rem;
-  text-align: center;
-}
 
