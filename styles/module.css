@@ -7,8 +7,8 @@
 }
 
 @font-face {
-  font-family: "3rd";
-  src: url("../fonts/3rd Man.woff2") format("woff2");
+  font-family: "special-elite";
+  src: url("../fonts/special-elite.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -43,11 +43,11 @@
   font-family: "courier-prime", monospace !important;
 }
 
-/* Les éléments déjà prévus en 3rd conservent explicitement cette police. */
+/* Les éléments déjà prévus en special-elite conservent explicitement cette police. */
 .chat-message .etc-conflict-card > .etc-card__header h3,
 .chat-message .etc-darkness-card__title,
 .chat-message .etc-character-departure__title {
-  font-family: "3rd", serif !important;
+  font-family: "special-elite", serif !important;
 }
 
 .chat-message .etc-darkness-card,
@@ -98,8 +98,9 @@
   grid-column: 1 / 3;
   justify-self: center;
   font-weight: 400;
-  font-size: 3rem;
+  font-size: 2.3rem;
   white-space: nowrap;
+  letter-spacing: 2.5px;
 }
 
 .chat-message .etc-card .etc-pool--player .etc-pool__heading,
