@@ -43,7 +43,16 @@ import {
   registerSceneControlButtons
 } from "./controls.js";
 
+const INTEGRATED_SYSTEM_ID = "evil-tencandles-system";
+
 Hooks.once("init", () => {
+  if (game.system.id === INTEGRATED_SYSTEM_ID) {
+    console.info(
+      `${MODULE_ID} | Désactivé automatiquement : ses fonctionnalités sont intégrées au système ${INTEGRATED_SYSTEM_ID}.`
+    );
+    return;
+  }
+
   registerModuleFonts();
 
   game.settings.register(MODULE_ID, STATE_KEY, {
@@ -55,136 +64,140 @@ Hooks.once("init", () => {
     default: createDefaultState()
   });
 
+  registerModuleHooks();
+
   console.log(`${MODULE_ID} | Initialisation.`);
 });
 
-Hooks.once("ready", async () => {
-  game.socket.on(SOCKET_NAME, onSocketMessage);
+function registerModuleHooks() {
+  Hooks.once("ready", async () => {
+    game.socket.on(SOCKET_NAME, onSocketMessage);
 
-  game.evilTenCandlesRoll = {
-    getState,
-    openGMSetup,
-    openCanvasSetup,
-    installOfficialScene,
-    repairOfficialSceneInstallation,
-    getSceneInstallerDiagnostics,
-    sceneInstallerBuild: SCENE_INSTALLER_BUILD,
-    syncCanvas: () => syncCanvasSafely(getState(), { notify: true }),
-    diagnoseCanvas: () => syncCanvasSafely(getState(), { notify: true }),
-    requestPlayerRoll,
-    requestGMRoll: () => requestAction("gm-roll"),
-    cancelActiveResolution,
+    game.evilTenCandlesRoll = {
+      getState,
+      openGMSetup,
+      openCanvasSetup,
+      installOfficialScene,
+      repairOfficialSceneInstallation,
+      getSceneInstallerDiagnostics,
+      sceneInstallerBuild: SCENE_INSTALLER_BUILD,
+      syncCanvas: () => syncCanvasSafely(getState(), { notify: true }),
+      diagnoseCanvas: () => syncCanvasSafely(getState(), { notify: true }),
+      requestPlayerRoll,
+      requestGMRoll: () => requestAction("gm-roll"),
+      cancelActiveResolution,
 
-    getSelectedActorResources: async () => {
-      const actor = await chooseCharacterActorForRoll();
-      if (!actor) return null;
+      getSelectedActorResources: async () => {
+        const actor = await chooseCharacterActorForRoll();
+        if (!actor) return null;
 
-      const resources = getActorResourceState(actor);
-      console.log(`${MODULE_ID} | Ressources de ${actor.name} :`, resources);
-      return resources;
-    },
+        const resources = getActorResourceState(actor);
+        console.log(`${MODULE_ID} | Ressources de ${actor.name} :`, resources);
+        return resources;
+      },
 
-    resetSelectedActorResources: async () => {
-      if (!game.user.isGM) {
-        ui.notifications.warn(localize("Notifications.GMOnly"));
-        return false;
+      resetSelectedActorResources: async () => {
+        if (!game.user.isGM) {
+          ui.notifications.warn(localize("Notifications.GMOnly"));
+          return false;
+        }
+
+        const actor = await chooseCharacterActorForRoll();
+        if (!actor) return false;
+
+        return resetActorResources(actor);
+      },
+
+      resetState: async () => {
+        if (!game.user.isGM) {
+          ui.notifications.warn(localize("Notifications.GMOnly"));
+          return;
+        }
+
+        const currentState = getState();
+        const resetState = createDefaultState();
+
+        // La configuration des UUID est conservée lors d'un reset de partie.
+        resetState.canvasSync = clone(currentState.canvasSync);
+
+        await saveState(resetState);
+        await syncCanvasSafely(resetState);
+
+        ui.notifications.info(localize("Notifications.StateReset"));
       }
+    };
 
-      const actor = await chooseCharacterActorForRoll();
-      if (!actor) return false;
+    mountFloatingPlayerRollButton();
 
-      return resetActorResources(actor);
-    },
+    await repairOfficialSceneConfigurationOnReady();
 
-    resetState: async () => {
-      if (!game.user.isGM) {
-        ui.notifications.warn(localize("Notifications.GMOnly"));
-        return;
-      }
+    console.log(
+      `${MODULE_ID} | Prêt — ${SCENE_INSTALLER_BUILD}.`
+    );
+  });
 
-      const currentState = getState();
-      const resetState = createDefaultState();
+  Hooks.on("preCreateActor", (actor, data) => {
+    if (game.system.id !== "tencandles") return;
+    if (actor.type !== "character") return;
 
-      // La configuration des UUID est conservée lors d'un reset de partie.
-      resetState.canvasSync = clone(currentState.canvasSync);
+    const items = foundry.utils.deepClone(
+      Array.isArray(data.items) ? data.items : []
+    );
 
-      await saveState(resetState);
-      await syncCanvasSafely(resetState);
+    const existingTypes = new Set(
+      items.map((item) => item.type)
+    );
 
-      ui.notifications.info(localize("Notifications.StateReset"));
+    if (!existingTypes.has("virtue")) {
+      items.push({
+        name: localize("Items.Virtue"),
+        type: "virtue",
+        system: {
+          description: ""
+        }
+      });
     }
-  };
 
-  mountFloatingPlayerRollButton();
+    if (!existingTypes.has("vice")) {
+      items.push({
+        name: localize("Items.Vice"),
+        type: "vice",
+        system: {
+          description: ""
+        }
+      });
+    }
 
-  await repairOfficialSceneConfigurationOnReady();
+    actor.updateSource({ items });
+  });
 
-  console.log(
-    `${MODULE_ID} | Prêt — ${SCENE_INSTALLER_BUILD}.`
-  );
-});
+  Hooks.on("getSceneControlButtons", registerSceneControlButtons);
+  Hooks.on("createScene", handleOfficialSceneCreated);
+  Hooks.on("renderChatMessageHTML", activateChatMessageActions);
 
-Hooks.on("preCreateActor", (actor, data) => {
-  if (game.system.id !== "tencandles") return;
-  if (actor.type !== "character") return;
+  Hooks.on("updateSetting", (setting) => {
+    if (
+      setting.key === `${MODULE_ID}.${STATE_KEY}` ||
+      setting.key === STATE_KEY
+    ) {
+      refreshFloatingPlayerRollButton();
+    }
+  });
 
-  const items = foundry.utils.deepClone(
-    Array.isArray(data.items) ? data.items : []
-  );
-
-  const existingTypes = new Set(
-    items.map((item) => item.type)
-  );
-
-  if (!existingTypes.has("virtue")) {
-    items.push({
-      name: localize("Items.Virtue"),
-      type: "virtue",
-      system: {
-        description: ""
-      }
-    });
-  }
-
-  if (!existingTypes.has("vice")) {
-    items.push({
-      name: localize("Items.Vice"),
-      type: "vice",
-      system: {
-        description: ""
-      }
-    });
-  }
-
-  actor.updateSource({ items });
-});
-
-Hooks.on("getSceneControlButtons", registerSceneControlButtons);
-Hooks.on("createScene", handleOfficialSceneCreated);
-Hooks.on("renderChatMessageHTML", activateChatMessageActions);
-
-Hooks.on("updateSetting", (setting) => {
-  if (
-    setting.key === `${MODULE_ID}.${STATE_KEY}` ||
-    setting.key === STATE_KEY
-  ) {
+  Hooks.on("userConnected", () => {
     refreshFloatingPlayerRollButton();
-  }
-});
+  });
 
-Hooks.on("userConnected", () => {
-  refreshFloatingPlayerRollButton();
-});
+  Hooks.on("canvasReady", async () => {
+    mountFloatingPlayerRollButton();
+    if (!isActiveGM()) return;
 
-Hooks.on("canvasReady", async () => {
-  mountFloatingPlayerRollButton();
-  if (!isActiveGM()) return;
+    const state = getState();
+    const config = state.canvasSync;
 
-  const state = getState();
-  const config = state.canvasSync;
+    if (!config.enabled) return;
+    if (config.sceneId && canvas.scene?.id !== config.sceneId) return;
 
-  if (!config.enabled) return;
-  if (config.sceneId && canvas.scene?.id !== config.sceneId) return;
-
-  await syncCanvasSafely(state);
-});
+    await syncCanvasSafely(state);
+  });
+}

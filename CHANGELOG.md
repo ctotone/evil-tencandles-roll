@@ -8,6 +8,8 @@ Le format s’inspire de *Keep a Changelog* et le projet suit le versionnement s
 
 ### Added
 
+- Désactivation automatique du module lorsque le système actif est `evil-tencandles-system`, afin d’éviter les doublons avec les fonctionnalités intégrées au système.
+
 ### Changed
 
 ### Fixed
