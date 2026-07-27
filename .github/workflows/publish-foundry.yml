@@ -27,10 +27,10 @@ jobs:
 
     env:
       PACKAGE_ID: evil-tencandles-roll
-      PACKAGE_VERSION: 1.0.0
+      PACKAGE_VERSION: 1.1.0
 
-      MANIFEST_URL: https://github.com/ctotone/evil-tencandles-roll/releases/download/1.0.0/module.json
-      NOTES_URL: https://github.com/ctotone/evil-tencandles-roll/releases/tag/1.0.0
+      MANIFEST_URL: https://github.com/ctotone/evil-tencandles-roll/releases/download/1.1.0/module.json
+      NOTES_URL: https://github.com/ctotone/evil-tencandles-roll/releases/tag/1.1.0
 
       FOUNDRY_MINIMUM: "14"
       FOUNDRY_VERIFIED: "14"
@@ -51,9 +51,9 @@ jobs:
           fi
 
           if [[ "$MODE" == "publish" ]] &&
-             [[ "$CONFIRMATION" != "PUBLISH 1.0.0" ]]; then
+             [[ "$CONFIRMATION" != "PUBLISH 1.1.0" ]]; then
             echo "::error::Publication annulée : la confirmation est incorrecte."
-            echo 'Saisir exactement : PUBLISH 1.0.0'
+            echo 'Saisir exactement : PUBLISH 1.1.0'
             exit 1
           fi
 
