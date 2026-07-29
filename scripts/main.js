@@ -43,7 +43,7 @@ import {
   registerSceneControlButtons
 } from "./controls.js";
 
-const INTEGRATED_SYSTEM_ID = "evil-tencandles-system";
+const INTEGRATED_SYSTEM_ID = "tencandles-ga";
 
 Hooks.once("init", () => {
   if (game.system.id === INTEGRATED_SYSTEM_ID) {
