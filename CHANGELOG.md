@@ -4,17 +4,23 @@ Toutes les modifications importantes apportées à **Evilbram Ten Candles Roll**
 
 Le format s’inspire de *Keep a Changelog* et le projet suit le versionnement sémantique.
 
+## [Unreleased]
+
+---
+
+## [1.1.1] - 2026-07-29
+
+### Fixed
+
+- Mise à jour de l’identifiant du système intégré détecté par le module, de `evil-tencandles-system` vers `tencandles-ga`.
+
+---
+
 ## [1.1.0] - 2026-07-27
 
 ### Added
 
 - Désactivation automatique du module lorsque le système actif est `evil-tencandles-system`, afin d’éviter les doublons avec les fonctionnalités intégrées au système.
-
-### Changed
-
-### Fixed
-
-### Removed
 
 ---
 
@@ -36,6 +42,7 @@ Le format s’inspire de *Keep a Changelog* et le projet suit le versionnement s
 - Intégration des polices libres Special Elite et Courier Prime.
 - Documentation des licences tierces dans `THIRD_PARTY_LICENSES.md`.
 
-[Unreleased]: https://github.com/ctotone/evil-tencandles-roll/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/ctotone/evil-tencandles-roll/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/ctotone/evil-tencandles-roll/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/ctotone/evil-tencandles-roll/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/ctotone/evil-tencandles-roll/releases/tag/1.0.0
