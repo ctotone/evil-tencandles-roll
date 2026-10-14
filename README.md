@@ -1,3 +1,21 @@
+## ☕ Support the Developer / Soutenir le développeur
+
+### 🇬🇧 English
+This Foundry VTT module is developed and shared for free.
+If you enjoy using it and would like to support my work on Foundry VTT systems and modules, you can buy me a coffee!
+Your support is entirely optional, but always appreciated. Thank you!
+
+### 🇫🇷 Français
+Ce module Foundry VTT est développé et partagé gratuitement.
+Si vous appréciez son utilisation et souhaitez soutenir mon travail sur mes différents systèmes et modules Foundry VTT, vous pouvez m'offrir un café !
+Votre soutien est entièrement facultatif, mais toujours très apprécié. Merci !
+
+<p align="center">
+  <a href="https://ko-fi.com/evilbram">
+    <img src="https://storage.ko-fi.com/cdn/kofi5.png" alt="Support Evilbram on Ko-fi" height="45">
+  </a>
+</p>
+
 English version bellow
 
 # Evilbram Ten Candles Roll
