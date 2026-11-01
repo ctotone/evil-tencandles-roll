@@ -33,6 +33,7 @@ import {
   SCENE_INSTALLER_BUILD
 } from "./scene-installer.js";
 import { registerModuleFonts } from "./fonts.js";
+import { mountAboutInSettings } from "./about.js";
 import { cancelActiveResolution } from "./resolution.js";
 import { openCanvasSetup, openGMSetup } from "./dialogs.js";
 import { onSocketMessage, requestAction, requestPlayerRoll } from "./socket.js";
@@ -171,6 +172,7 @@ function registerModuleHooks() {
     actor.updateSource({ items });
   });
 
+  Hooks.on("renderSettings", mountAboutInSettings);
   Hooks.on("getSceneControlButtons", registerSceneControlButtons);
   Hooks.on("createScene", handleOfficialSceneCreated);
   Hooks.on("renderChatMessageHTML", activateChatMessageActions);

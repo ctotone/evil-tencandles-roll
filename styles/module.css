@@ -847,3 +847,40 @@
 
 
 
+
+/* Fenêtre À propos — styles isolés de la régie et des cartes de chat. */
+.etcr-about-settings-entry { padding: .45rem .55rem; }
+.etcr-about-settings-button {
+  width: 100%; min-width: 0; height: auto; min-height: 2rem;
+  display: flex; align-items: center; justify-content: center; gap: .45rem;
+  padding: .4rem .6rem; white-space: normal; box-sizing: border-box;
+  color: #c8a96b; border: 1px solid #c8a96b;
+}
+.etcr-about-settings-button:hover, .etcr-about-settings-button:focus-visible,
+.etcr-about-coffee:hover, .etcr-about-coffee:focus-visible {
+  color: #e0be76; border-color: #e0be76; background: rgba(200,169,107,.13);
+}
+.etcr-about-settings-label { min-width: 0; text-align: center; line-height: 1.25; overflow-wrap: break-word; }
+.etcr-about .window-content { overflow-y: auto; }
+.etcr-about-content {
+  padding: .85rem 1rem 1rem; font-family: "courier-prime", monospace;
+  line-height: 1.45; color: var(--color-text-primary, #eee);
+}
+.etcr-about-header { text-align: center; border-bottom: 1px solid rgba(180,180,180,.25); padding-bottom: .55rem; }
+.etcr-about-header h2 { font-family: "special-elite", serif; font-size: 1.2rem; margin: .2rem 0 .4rem; }
+.etcr-about-header p { margin: .15rem 0; font-size: .87rem; }
+.etcr-about-description { margin: .8rem 0; }
+.etcr-about-github { display: inline-flex; align-items: center; gap: .4rem; }
+.etcr-about-system, .etcr-about-support {
+  margin-top: .85rem; padding: .85rem; border: 1px solid rgba(175,175,175,.3);
+  border-radius: 7px; background: rgba(128,128,128,.07);
+}
+.etcr-about-system { border-color: rgba(200,169,107,.55); }
+.etcr-about-system h3, .etcr-about-support h3 { font-size: 1.02rem; margin: 0 0 .45rem; }
+.etcr-about-system p, .etcr-about-support p { margin: 0 0 .75rem; }
+.etcr-about-system-link, .etcr-about-coffee {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .4rem .7rem; border: 1px solid #c8a96b; border-radius: 5px;
+  color: #c8a96b; text-decoration: none;
+}
+.etcr-about-disclaimer { opacity: .75; font-size: .76rem; margin: .85rem 0 0; }

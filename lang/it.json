@@ -224,6 +224,21 @@
       "DialogFormMissing": "Modulo DialogV2 non trovato.",
       "DialogFieldMissing": "Campo del modulo non trovato: {name}",
       "RollDeserialize": "La classe Roll attiva non può ricostruire un tiro serializzato."
+    },
+    "About": {
+      "SidebarEntry": "Informazioni su Ten Candles Roll",
+      "Title": "Informazioni su Evilbram Ten Candles Roll",
+      "Version": "Versione:",
+      "Developer": "Sviluppato da:",
+      "Description": "Modulo comunitario non ufficiale per tiri, conflitti e candele di Ten Candles in Foundry VTT.",
+      "GitHub": "Repository GitHub del modulo",
+      "UpgradeTitle": "Scopri Ten Candles – Game Assistant",
+      "UpgradeText": "Per un’esperienza più completa, scopri Ten Candles – Game Assistant: un sistema di gioco autonomo con schede dei personaggi, strumenti per il GM, temi delle scene, fiamme animate e registrazione degli ultimi messaggi. Sostituisce questo modulo nei mondi che lo utilizzano; non serve installarli entrambi.",
+      "UpgradeAction": "Scopri il sistema di gioco",
+      "SupportTitle": "Sostieni lo sviluppo",
+      "SupportText": "Questo modulo è sviluppato e distribuito gratuitamente. Se apprezzi il mio lavoro su Foundry VTT, puoi offrirmi un caffè. Il supporto è del tutto facoltativo. Grazie!",
+      "Coffee": "Buy a Coffee",
+      "Disclaimer": "Progetto indipendente e non ufficiale, senza affiliazione o approvazione da parte dei creatori di Ten Candles."
     }
   }
 }

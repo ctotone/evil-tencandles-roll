@@ -1,0 +1,36 @@
+<div class="etcr-about-content">
+  <header class="etcr-about-header">
+    <h2>{{moduleName}}</h2>
+    {{#if moduleVersion}}<p>{{localize "EVILTENCANDLES.About.Version"}} {{moduleVersion}}</p>{{/if}}
+    <p>{{localize "EVILTENCANDLES.About.Developer"}} <strong>Evilbram</strong></p>
+  </header>
+
+  <p class="etcr-about-description">{{localize "EVILTENCANDLES.About.Description"}}</p>
+  {{#if repositoryUrl}}
+    <a class="etcr-about-github" href="{{repositoryUrl}}" target="_blank" rel="noopener noreferrer">
+      <i class="fa-brands fa-github" aria-hidden="true"></i>
+      {{localize "EVILTENCANDLES.About.GitHub"}}
+      <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+    </a>
+  {{/if}}
+
+  <section class="etcr-about-system">
+    <h3>{{localize "EVILTENCANDLES.About.UpgradeTitle"}}</h3>
+    <p>{{localize "EVILTENCANDLES.About.UpgradeText"}}</p>
+    <a class="etcr-about-system-link" href="{{systemUrl}}" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
+      {{localize "EVILTENCANDLES.About.UpgradeAction"}}
+      <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+    </a>
+  </section>
+
+  <section class="etcr-about-support">
+    <h3>{{localize "EVILTENCANDLES.About.SupportTitle"}}</h3>
+    <p>{{localize "EVILTENCANDLES.About.SupportText"}}</p>
+    <a class="etcr-about-coffee" href="{{coffeeUrl}}" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
+      {{localize "EVILTENCANDLES.About.Coffee"}}
+    </a>
+  </section>
+  <p class="etcr-about-disclaimer">{{localize "EVILTENCANDLES.About.Disclaimer"}}</p>
+</div>

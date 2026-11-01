@@ -224,6 +224,21 @@
       "DialogFormMissing": "DialogV2フォームが見つかりません。",
       "DialogFieldMissing": "フォーム項目が見つかりません：{name}",
       "RollDeserialize": "現在のRollクラスでは保存済みロールを復元できません。"
+    },
+    "About": {
+      "SidebarEntry": "Ten Candles Roll について",
+      "Title": "Evilbram Ten Candles Roll について",
+      "Version": "バージョン：",
+      "Developer": "開発者：",
+      "Description": "Foundry VTT で Ten Candles のダイスロール、対立、ろうそくを管理する非公式コミュニティモジュールです。",
+      "GitHub": "モジュールの GitHub リポジトリ",
+      "UpgradeTitle": "Ten Candles – Game Assistant をご紹介",
+      "UpgradeText": "より充実した体験には、独立したゲームシステム Ten Candles – Game Assistant をご利用ください。キャラクターシート、GM 用操作画面、シーンテーマ、アニメーションする炎、最後のメッセージの録音機能を備えています。このシステムを使うワールドでは本モジュールは不要です。両方を導入する必要はありません。",
+      "UpgradeAction": "ゲームシステムを見る",
+      "SupportTitle": "開発を支援する",
+      "SupportText": "このモジュールは無料で開発・公開しています。Foundry VTT 向けの活動を気に入っていただけたら、コーヒーをごちそうしていただけるとうれしいです。支援は任意です。ありがとうございます！",
+      "Coffee": "Buy a Coffee",
+      "Disclaimer": "Ten Candles の制作者とは無関係の、非公式な独立プロジェクトです。"
     }
   }
 }

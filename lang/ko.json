@@ -224,6 +224,21 @@
       "DialogFormMissing": "DialogV2 양식을 찾지 못했습니다.",
       "DialogFieldMissing": "양식 항목을 찾지 못했습니다: {name}",
       "RollDeserialize": "현재 Roll 클래스로 직렬화된 굴림을 복원할 수 없습니다."
+    },
+    "About": {
+      "SidebarEntry": "Ten Candles Roll 정보",
+      "Title": "Evilbram Ten Candles Roll 정보",
+      "Version": "버전:",
+      "Developer": "개발자:",
+      "Description": "Foundry VTT에서 Ten Candles의 주사위 굴림, 갈등, 촛불을 관리하는 비공식 커뮤니티 모듈입니다.",
+      "GitHub": "모듈 GitHub 저장소",
+      "UpgradeTitle": "Ten Candles – Game Assistant 알아보기",
+      "UpgradeText": "더 완전한 경험을 원한다면 독립형 게임 시스템 Ten Candles – Game Assistant를 만나 보세요. 캐릭터 시트, GM 관리 도구, 장면 테마, 움직이는 불꽃, 마지막 메시지 녹음 기능을 제공합니다. 이 시스템을 사용하는 월드에서는 본 모듈이 필요하지 않으므로 둘 다 설치할 필요는 없습니다.",
+      "UpgradeAction": "게임 시스템 알아보기",
+      "SupportTitle": "개발 후원",
+      "SupportText": "이 모듈은 무료로 개발하고 공유합니다. Foundry VTT를 위한 제 작업이 마음에 드신다면 커피 한 잔으로 후원해 주세요. 후원은 전적으로 선택 사항입니다. 감사합니다!",
+      "Coffee": "Buy a Coffee",
+      "Disclaimer": "Ten Candles 제작진과 제휴하거나 공식 승인을 받지 않은 독립 프로젝트입니다."
     }
   }
 }

@@ -224,6 +224,21 @@
       "DialogFormMissing": "Formulaire DialogV2 introuvable.",
       "DialogFieldMissing": "Champ de formulaire introuvable : {name}",
       "RollDeserialize": "La classe Roll active ne permet pas de reconstruire un jet sérialisé."
+    },
+    "About": {
+      "SidebarEntry": "À propos de Ten Candles Roll",
+      "Title": "À propos d’Evilbram Ten Candles Roll",
+      "Version": "Version :",
+      "Developer": "Développé par :",
+      "Description": "Module communautaire non officiel pour gérer les jets, les conflits et les bougies de Ten Candles sur Foundry VTT.",
+      "GitHub": "Dépôt GitHub du module",
+      "UpgradeTitle": "Découvrez Ten Candles – Game Assistant",
+      "UpgradeText": "Pour une expérience plus complète, découvrez Ten Candles – Game Assistant : un système de jeu autonome avec fiches de personnages, régie MJ, thèmes de scènes, flammes animées et enregistrement des Derniers Messages. Il remplace ce module dans les mondes qui utilisent ce système ; il ne nécessite pas d’installer les deux.",
+      "UpgradeAction": "Découvrir le système de jeu",
+      "SupportTitle": "Soutenir le développement",
+      "SupportText": "Ce module est développé et partagé gratuitement. Si vous appréciez mon travail sur Foundry VTT, vous pouvez m’offrir un café. Ce soutien est entièrement facultatif. Merci !",
+      "Coffee": "Buy a Coffee",
+      "Disclaimer": "Projet indépendant et non officiel, sans affiliation ni approbation des créateurs de Ten Candles."
     }
   }
 }

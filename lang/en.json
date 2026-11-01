@@ -224,6 +224,21 @@
       "DialogFormMissing": "DialogV2 form not found.",
       "DialogFieldMissing": "Form field not found: {name}",
       "RollDeserialize": "The active Roll class cannot rebuild a serialized roll."
+    },
+    "About": {
+      "SidebarEntry": "About Ten Candles Roll",
+      "Title": "About Evilbram Ten Candles Roll",
+      "Version": "Version:",
+      "Developer": "Developed by:",
+      "Description": "Unofficial community module for Ten Candles dice rolls, conflicts, and candles in Foundry VTT.",
+      "GitHub": "Module GitHub repository",
+      "UpgradeTitle": "Discover Ten Candles – Game Assistant",
+      "UpgradeText": "For a more complete experience, try Ten Candles – Game Assistant: a standalone game system with character sheets, GM controls, scene themes, animated candle flames, and a Last Messages voice recorder. It replaces this module in worlds using that system; you do not need to install both.",
+      "UpgradeAction": "Discover the game system",
+      "SupportTitle": "Support development",
+      "SupportText": "This module is developed and shared for free. If you enjoy my Foundry VTT work, you can buy me a coffee. Support is entirely optional. Thank you!",
+      "Coffee": "Buy a Coffee",
+      "Disclaimer": "Independent, unofficial project. Not affiliated with or endorsed by the creators of Ten Candles."
     }
   }
 }

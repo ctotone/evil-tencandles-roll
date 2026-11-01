@@ -4,7 +4,15 @@ Toutes les modifications importantes apportées à **Evilbram Ten Candles Roll**
 
 Le format s’inspire de *Keep a Changelog* et le projet suit le versionnement sémantique.
 
-## [Unreleased]
+## [1.2] - 2026-11-01
+
+### Fixed
+
+- En cas d’égalité du nombre de 6 lors d’un conflit, la narration revient au MJ s’il a effectué son jet. Sans jet MJ, elle reste au joueur.
+
+### Added
+
+- Fenêtre « À propos » accessible depuis les Paramètres aux MJ et aux joueurs, avec lien vers Ten Candles – Game Assistant et soutien Ko-fi.
 
 ---
 

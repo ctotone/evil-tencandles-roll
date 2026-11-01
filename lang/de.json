@@ -224,6 +224,21 @@
       "DialogFormMissing": "DialogV2-Formular nicht gefunden.",
       "DialogFieldMissing": "Formularfeld nicht gefunden: {name}",
       "RollDeserialize": "Die aktive Roll-Klasse kann einen serialisierten Wurf nicht wiederherstellen."
+    },
+    "About": {
+      "SidebarEntry": "Über Ten Candles Roll",
+      "Title": "Über Evilbram Ten Candles Roll",
+      "Version": "Version:",
+      "Developer": "Entwickelt von:",
+      "Description": "Inoffizielles Community-Modul für Würfe, Konflikte und Kerzen in Ten Candles auf Foundry VTT.",
+      "GitHub": "GitHub-Repository des Moduls",
+      "UpgradeTitle": "Ten Candles – Game Assistant entdecken",
+      "UpgradeText": "Für ein umfassenderes Spielerlebnis gibt es Ten Candles – Game Assistant: ein eigenständiges Spielsystem mit Charakterbögen, SL-Steuerung, Szenenthemen, animierten Flammen und einem Rekorder für letzte Nachrichten. In Welten mit diesem System ersetzt es das Modul; beide müssen nicht zusammen installiert werden.",
+      "UpgradeAction": "Spielsystem entdecken",
+      "SupportTitle": "Entwicklung unterstützen",
+      "SupportText": "Dieses Modul wird kostenlos entwickelt und geteilt. Wenn dir meine Arbeit an Foundry VTT gefällt, kannst du mir einen Kaffee spendieren. Die Unterstützung ist freiwillig. Vielen Dank!",
+      "Coffee": "Buy a Coffee",
+      "Disclaimer": "Unabhängiges, inoffizielles Projekt ohne Verbindung zu oder Unterstützung durch die Urheber von Ten Candles."
     }
   }
 }

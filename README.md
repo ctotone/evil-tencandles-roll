@@ -24,6 +24,8 @@ English version bellow
 
 Le module gère les pools de dés des joueurs et du maître du jeu, les résultats des conflits, le Vice, la Vertu, l’Espoir, la Limite et la progression des dix bougies. Il propose également une scène officielle prête à l’emploi.
 
+Une fenêtre **À propos**, accessible depuis les **Paramètres** de Foundry, présente également le système complet **[Ten Candles – Game Assistant](https://foundryvtt.com/packages/tencandles-ga)**. Celui-ci constitue une alternative autonome au module.
+
 ## Comment utiliser le module
 
 ### 1. Installer la scène Ten Candles
@@ -212,6 +214,8 @@ Module créé par **Evilbram**.
 **Evilbram Ten Candles Roll** supports **Ten Candles** sessions on Foundry VTT 14.
 
 The module manages player and Game Master dice pools, conflict results, Vice, Virtue, Hope, Brink, and the progression of the ten candles. It also includes an official ready-to-use scene.
+
+An **About** window in Foundry's **Settings** also introduces the complete **[Ten Candles – Game Assistant](https://foundryvtt.com/packages/tencandles-ga)**, a standalone alternative to this module.
 
 ## How to use the module
 

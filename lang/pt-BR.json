@@ -224,6 +224,21 @@
       "DialogFormMissing": "Formulário DialogV2 não encontrado.",
       "DialogFieldMissing": "Campo de formulário não encontrado: {name}",
       "RollDeserialize": "A classe Roll ativa não consegue reconstruir uma rolagem serializada."
+    },
+    "About": {
+      "SidebarEntry": "Sobre Ten Candles Roll",
+      "Title": "Sobre Evilbram Ten Candles Roll",
+      "Version": "Versão:",
+      "Developer": "Desenvolvido por:",
+      "Description": "Módulo comunitário não oficial para rolagens, conflitos e velas de Ten Candles no Foundry VTT.",
+      "GitHub": "Repositório GitHub do módulo",
+      "UpgradeTitle": "Conheça Ten Candles – Game Assistant",
+      "UpgradeText": "Para uma experiência mais completa, conheça Ten Candles – Game Assistant: um sistema de jogo independente com fichas de personagens, controles do mestre, temas de cenas, chamas animadas e gravação das últimas mensagens. Ele substitui este módulo nos mundos que usam o sistema; não é necessário instalar os dois.",
+      "UpgradeAction": "Conhecer o sistema de jogo",
+      "SupportTitle": "Apoie o desenvolvimento",
+      "SupportText": "Este módulo é desenvolvido e compartilhado gratuitamente. Se você gosta do meu trabalho no Foundry VTT, pode me pagar um café. O apoio é totalmente opcional. Obrigado!",
+      "Coffee": "Buy a Coffee",
+      "Disclaimer": "Projeto independente e não oficial, sem vínculo ou endosso dos criadores de Ten Candles."
     }
   }
 }

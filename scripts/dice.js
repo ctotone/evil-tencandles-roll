@@ -273,8 +273,15 @@ export function getResolutionAnalysis(resolution) {
 
   const playerSixes = blueSixes + momentSixes;
   const success = blueSixes > 0 || momentSuccess;
+  // À égalité de 6, le MJ narre uniquement s'il a effectivement lancé
+  // son pool. Une validation sans jet MJ conserve la narration au joueur.
+  const gmRolled = Boolean(
+    resolution.gmRollCompleted && resolution.redPoolSize > 0
+  );
+  const gmWins = redSixes > playerSixes ||
+    (gmRolled && redSixes === playerSixes);
   const narrator = success
-    ? (redSixes > playerSixes ? "gm" : "player")
+    ? (gmWins ? "gm" : "player")
     : null;
 
   return {
