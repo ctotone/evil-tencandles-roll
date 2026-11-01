@@ -3,6 +3,11 @@ name: Publish to Foundry VTT
 on:
   workflow_dispatch:
     inputs:
+      version:
+        description: "Version de la release GitHub à publier (ex. 1.2.0)"
+        required: true
+        type: string
+
       mode:
         description: "Choisir un test ou la publication réelle"
         required: true
@@ -27,10 +32,10 @@ jobs:
 
     env:
       PACKAGE_ID: evil-tencandles-roll
-      PACKAGE_VERSION: 1.1.1
+      PACKAGE_VERSION: ${{ inputs.version }}
 
-      MANIFEST_URL: https://github.com/ctotone/evil-tencandles-roll/releases/download/1.1.1/module.json
-      NOTES_URL: https://github.com/ctotone/evil-tencandles-roll/releases/tag/1.1.1
+      MANIFEST_URL: https://github.com/ctotone/evil-tencandles-roll/releases/download/${{ inputs.version }}/module.json
+      NOTES_URL: https://github.com/ctotone/evil-tencandles-roll/releases/tag/${{ inputs.version }}
 
       FOUNDRY_MINIMUM: "14"
       FOUNDRY_VERIFIED: "14"
@@ -44,6 +49,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
+          if [[ -z "${PACKAGE_VERSION:-}" ]]; then
+            echo "::error::Le numéro de version est obligatoire."
+            exit 1
+          fi
 
           if [[ -z "${FOUNDRY_RELEASE_TOKEN:-}" ]]; then
             echo "::error::Le secret FOUNDRY_RELEASE_TOKEN est absent ou vide."
