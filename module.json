@@ -5,7 +5,10 @@
   "description": "Gestion des lancers et des résolutions pour Ten Candles.",
   "authors": [
     {
-      "name": "Evilbram"
+      "name": "Evilbram",
+      "url": "https://github.com/ctotone",
+      "email": "ctotone@gmail.com",
+      "discord": "evilbram"
     }
   ],
   "version": "1.2.0",
